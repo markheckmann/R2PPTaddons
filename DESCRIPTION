@@ -1,0 +1,18 @@
+Package: R2PPTaddons
+Version: 0.1
+Date: 2012-06-20
+Title: Functions extending the functionality of R2PPT
+Authors@R: c(person("Mark", "Heckmann", role = c("aut", "cre"),
+    email = "heckmann@uni-bremen.de"))
+Depends:
+    R2PPT,
+    rdyncall
+Description: R2PPT is a handy package to create output in PowerPoint documents.
+    This package extends its features.
+License: GPL (>= 2)
+OS_type: windows
+Collate:
+    'graphics.R'
+    'R2PPTaddons.R'
+    'utils.R'
+    'dim.R'

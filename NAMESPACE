@@ -1,0 +1,4 @@
+export(PPT.AddGraphicstoSlide2)
+export(arbitrary_graphics)
+export(slide_height)
+export(slide_width)
