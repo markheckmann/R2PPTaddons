@@ -1,4 +1,31 @@
 
+
+#' Update the current slide stored in R2PPT object
+#'
+#' R2PPT uses an object to store the current slide amongst other things. 
+#' Unfortunately the current slide is only set when a new slide is inserted. It
+#' is NULL when a file is loaded. This will cause errors sometimes, hence we may
+#' need to set it manually.
+#' 
+#' @param ppt   The ppt object as used in \pkg{R2PPT}.
+#' @param i     Slide index.
+#' @param slide A slide object as alternative to setting the index.
+#' @author Mark Heckmann
+#' @export
+#' @example inst/examples/PPT.ReplaceTextByGraphicExample.R
+#'
+PPT.UpdateCurrentSlide <- function(ppt, i=NULL, slide=NULL)
+{
+  if (!is.null(i))
+    slide <- ppt$pres[["Slides"]]$Item(i)
+  ppt$Current.Slide <- slide
+  ppt
+}
+
+
+#### Insert graphic ####
+
+
 # This it the workhorse, arguments are explained in function 
 # PPT.AddGraphicstoSlide2 below.
 #
@@ -23,8 +50,16 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   # Adding a new slide before adding graphic
   if (newslide)
     ppt <- PPT.AddBlankSlide(ppt)  
-
-  shapes <- ppt$Current.Slide[["shapes"]]
+  # if the current slide object is not set, an error will occur
+  if (!newslide & is.null(ppt$Current.Slide)) {  
+      warning("No current slide defined. Slide 1 ist selected.", call. = FALSE)
+      ppt <- PPT.UpdateCurrentSlide(ppt, i=1)
+  }
+  
+  # TODO: problem here because current slide is not updated when changing focus interactively
+  #browser()
+  #ppt$pres Application.ActiveWindow.View.Slide
+  shapes <- ppt$Current.Slide[["Shapes"]]
   slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
   slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
   
@@ -32,8 +67,9 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   # size 1,1 would not work and will produce blurry images.
   # For an unknown reason the size has to be reasonably big, here 90 percent
   # of the slide dimensions are used.
-
-  file <- R.utils::getAbsolutePath(file)   # absolute paths must be supplied to COM object
+  
+  file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
+  #file <- R.utils::getAbsolutePath(file)   # absolute paths must be supplied to COM object
   file <- gsub("/", "\\\\", file)
   
   img <- shapes$AddPicture(FileName = file, 
@@ -168,7 +204,7 @@ PPT.AddGraphicstoSlide2 <- function(ppt, file, width=.9, height=.9,
                                      maxscale=1)
 {
   for (f in file) {
-    ppt <- PPT.AddGraphicstoSlide2_(ppt, f, width, height, x, y, 
+    ppt <- PPT.AddGraphicstoSlide2_(ppt, file, width, height, x, y, 
                                     x.offset, y.offset, 
                                     proportional, newslide, maxscale)
   }
@@ -181,56 +217,120 @@ PPT.AddGraphicstoSlide2 <- function(ppt, file, width=.9, height=.9,
 
 
 
-# 2015-09-01: rdyncall has been removed from CRAN. 
-# So this solution is no longer possible
-# 
-# # library(R2PPT)
-# # require(rdyncall)
-# # solution provided by Daniel Adler by connecting to the SDL library.
-# # This requires to have the SDL Multimedia Framework installed on your 
-# # system (http://libsdl.org/).
-# # To install the precompiled versions of SDL you simply have to
-# # download and copy the DLLs into some folder on your sytem that
-# # is included in the Path. That's it! You need to download two libraries:
-# # SDL and SDL_image. You can find the download links on the SDL 
-# # homepage or by typing \code{?"rdyncall-demos"} into the R console.
-# 
-# # TODO
-# 
-# init_sdl_library <- function() {
-#   dynport(SDL)
-#   #SDL_Init(SDL_INIT_VIDEO)
-#   dynport(SDL_image)
-#   IMG_Init(IMG_INIT_JPG + IMG_INIT_PNG + IMG_INIT_TIF)  
-# }
-# 
-# get_image_size <- function(file) {  
-#   s <- IMG_Load(file)
-#   o <- list(width=s$w, height=s$h, file=file)
-#   SDL_FreeSurface(s)
-#   s <- NULL
-#   return(o)
-# }
-
-# #x <- get_image_size("pics/test.png")
-# #x$height
-# #x$width
-# 
-# 
-# # http://support.microsoft.com/kb/168649
-# # to get the file size via widnows command line
-# # TODO
-# #
-# get_file_size <- function(file){
-#   file <- paste0(getwd(), "/", file)
-#   file <- gsub("/", "\\\\", file)
-#  # for %I in (test.jpg) do @echo %~zI
-#   command <- paste0("for %I in (", file, ") do @echo %~zI")
-#   t <- system("for %I in (pics\\test.jpg) do @echo %~zI", intern=TRUE)
-# }
+#### Find text and replace by graphic ####
 
 
+# search string on all slides and replace it by graphic
 
+
+# Detect the presence or absence of text pattern in a shape object
+#
+# does the shape contain the text that is searched for
+# shp: poiter to shape
+# what: text that is searched for
+#
+shape_detect_text <- function(shape, what)
+{
+  has.text <- FALSE
+  textframe <- shape[["HasTextFrame"]]                # does the shape contain text?
+  if (textframe == -1) {                              # msoTriState Constant: msoFalse =0, msoTrue=-1
+    textRange <- shape[["TextFrame"]][["TextRange"]]  # get textrange from textframe
+    f.textRange <- textRange$Find(FindWhat = what)    # search in tectrange for text
+    txt <- f.textRange[["Text"]]                      # retrieve matched text, NULL if no matches
+    if (!is.null(txt)) { # NULL if text was not found
+      has.text <- TRUE
+    }                    
+  }
+  has.text
+}
+
+
+# Detect the presence or absence of text pattern in each shape of shapes collection
+#
+# sld: pointer to slide
+# what: text that is searched for
+# Returns indexes of shapes that contain the text pattern
+#
+shapes_detect_text <- function(shapes, what)
+{
+  #shapes <- slide[["Shapes"]]               # get all shapes on slide
+  nshapes <- shapes[["Count"]]              # number of shapes
+  if (nshapes == 0)
+    return(integer(0))
+  res <- rep(NA, nshapes)
+  for (i in 1L:nshapes) {
+    shp <- shapes$Item(i)
+    res[i] <- shape_detect_text(shp, what)         
+  }
+  which(res)
+}
+
+
+
+# retrieve shape objects with matching text pattern
+# slide: pointer to slide
+# what: text that is searched for
+#
+slide_retrieve_shapes <- function(slide, what)
+{
+  shapes <- slide[["Shapes"]]
+  ii <- shapes_detect_text(shapes, what)
+  l <- list()
+  for (i in ii){
+    l[[i]] <- shapes$Item(i)
+  }
+  l
+}
+
+
+# retrieve shape objects with matching text pattern across all slides
+# slide: pointer to slide
+# what: text that is searched for
+#
+slides_retrieve_shapes <- function(slides, what)
+{
+  nslides <- slides[["Count"]]
+  r <- list()
+  for (i in 1L:nslides){
+    sld <- slides$Item(i)
+    l <- slide_retrieve_shapes(sld, what)
+    r <- c(r, l)
+  }
+  r
+}
+
+
+
+#' Replace matching text by graphic
+#'
+#' Looks through all shapes and finds a shape with mathicng text pattern.
+#' The shape is deleted and a graphic is inseretd on the shape's parent slide. 
+#'
+#' @param ppt   The ppt object as used in \pkg{R2PPT}.
+#' @param what  Text pattern to match against.  
+#' @param file  Path to the graphic file.
+#' @param ... Arguments passed on to \code{\link{PPT.AddGraphicstoSlide2}}.
+#' @author Mark Heckmann
+#' @export
+#' @example inst/examples/PPT.ReplaceTextByGraphicExample.R
+#'
+PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
+{
+  slides <- ppt$pres[["Slides"]]
+  ss <- slides_retrieve_shapes(slides, what)   # get all shape objects that match text pattern 
+  if (length(ss) == 0)
+    warning("No shape with matching text pattern was not found.", call. = FALSE)
+  if (length(ss) > 1)
+    warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
+  
+  for (s in ss) {               # delete from last to first
+    sld <- s[["Parent"]]        # get shape's slide
+    #sld$Select()                # shape select throws error if focus is not on shape's slide, so select parent first
+    s$Delete()                  # delete shape
+    ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
+    PPT.AddGraphicstoSlide2(ppt, file, newslide=FALSE)
+  }  
+}
 
 
 
