@@ -296,7 +296,7 @@ slides_retrieve_shapes <- function(slides, what)
     l <- slide_retrieve_shapes(sld, what)
     r <- c(r, l)
   }
-  r
+  r[!sapply(r, is.null)]        # erase NULL elements
 }
 
 
@@ -328,8 +328,9 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
     #sld$Select()                # shape select throws error if focus is not on shape's slide, so select parent first
     s$Delete()                  # delete shape
     ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
-    PPT.AddGraphicstoSlide2(ppt, file, newslide=FALSE)
+    PPT.AddGraphicstoSlide2(ppt, file, newslide=FALSE, ...)
   }  
+  ppt
 }
 
 
