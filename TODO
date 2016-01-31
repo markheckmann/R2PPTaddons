@@ -1,2 +1,3 @@
 * Better placement of graphics: cast graphic into predefined space
 * add a bit lower than center
+* PPT.ReplaceTextByGraphic does not make a difference between a shape and a simple text object
