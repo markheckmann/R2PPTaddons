@@ -16,8 +16,8 @@ PPT.ReplaceTextByGraphic(ppt, what, file, ...)
 \item{...}{Arguments passed on to \code{\link{PPT.AddGraphicstoSlide2}}.}
 }
 \description{
-Looks through all shapes and finds a shape with mathicng text pattern.
-The shape is deleted and a graphic is inseretd on the shape's parent slide.
+Looks through all shapes and finds a shape with matching text pattern.
+The shape is deleted and a graphic is inserted on the shape's parent slide.
 }
 \examples{
 \dontrun{
