@@ -23,6 +23,7 @@ PPT.UpdateCurrentSlide <- function(ppt, i=NULL, slide=NULL)
 }
 
 
+
 #### Insert graphic ####
 
 
@@ -50,31 +51,29 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   # Adding a new slide before adding graphic
   if (newslide)
     ppt <- PPT.AddBlankSlide(ppt)  
+  
   # if the current slide object is not set, an error will occur
-  if (!newslide & is.null(ppt$Current.Slide)) {  
-      warning("No current slide defined. Slide 1 ist selected.", call. = FALSE)
-      ppt <- PPT.UpdateCurrentSlide(ppt, i=1)
+  # it is set when a new slide is added but not when an existing file is opened
+  if (is.null(ppt$Current.Slide)) {  
+      warning("No current slide defined. Slide 1 is used.\n", 
+              "Use 'PPT.UpdateCurrentSlide' to set a slide.", call. = FALSE)
+      ppt <- PPT.UpdateCurrentSlide(ppt, i=1)   # default slide to use
   }
   
-  # TODO: problem here because current slide is not updated when changing focus interactively
-  #browser()
-  #ppt$pres Application.ActiveWindow.View.Slide
   shapes <- ppt$Current.Slide[["Shapes"]]
   slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
   slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
   
-  # include shape with a pixel size not too small. I do not know why, but
-  # size 1,1 would not work and will produce blurry images.
-  # For an unknown reason the size has to be reasonably big, here 90 percent
-  # of the slide dimensions are used.
+  # include shape with a pixel size not too small. I do not know why, but size
+  # 1,1 would not work and will produce blurry images. For an unknown reason the
+  # size has to be reasonably big. Here the slide's dimensions are used.
   
   file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
-  #file <- R.utils::getAbsolutePath(file)   # absolute paths must be supplied to COM object
-  file <- gsub("/", "\\\\", file)
+  file <- gsub("/", "\\\\", file)           # backslashes must be used
   
   img <- shapes$AddPicture(FileName = file, 
                            LinkToFile = 0, 
-                           SaveWithDocument = -1, 
+                           SaveWithDocument = -1,   # msoTriState Constant: msoFalse =0, msoTrue=-1
                            Left = 1, 
                            Top = 1, 
                            Width = slide.width, 
@@ -84,16 +83,16 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   img$ScaleHeight(1, -1)
   img$ScaleWidth(1, -1)
   
-  # calculate optimal scaling for picture to fit slide
-  # if width and height are supplied, the graphic is rescaled so that the
-  # condition (img.width <=width & img.height <= height) is satisfied 
+  # calculate optimal scaling for picture to always fit on slide
+  # If width and height are supplied, the graphic is rescaled so that the
+  # condition (img.width <= width & img.height <= height) is satisfied 
   img.width <- img[["width"]]
   img.height <- img[["height"]]
 
   if (!is.na(width) & width > maxscale)
-    width <- width/slide.width
+    width <- width / slide.width
   if (!is.na(height) & height > maxscale)
-    height <- height/slide.height  
+    height <- height / slide.height  
   
   rescale.width.by <- width * slide.width / img.width
   rescale.height.by <- height * slide.height / img.height
@@ -113,7 +112,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   img$ScaleHeight(rescale.width.by, -1)
   img$ScaleWidth(rescale.height.by, -1)
 
-  # locate pic horizontally
+  # locate img horizontally
   if (x == "center") 
     x.left <- slide.width / 2 - img[["Width"]] / 2
   if (x == "left") 
@@ -123,7 +122,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   if (is.numeric(x))
     x.left <- x
   
-  # locate pic vertically
+  # locate img vertically
   if (y == "center") 
     y.top <- slide.height / 2 - img[["Height"]] / 2
   if (y == "top") 
@@ -253,8 +252,8 @@ shape_detect_text <- function(shape, what)
 #
 shapes_detect_text <- function(shapes, what)
 {
-  #shapes <- slide[["Shapes"]]               # get all shapes on slide
-  nshapes <- shapes[["Count"]]              # number of shapes
+  #shapes <- slide[["Shapes"]]        # get all shapes on slide
+  nshapes <- shapes[["Count"]]        # number of shapes
   if (nshapes == 0)
     return(integer(0))
   res <- rep(NA, nshapes)
@@ -283,6 +282,7 @@ slide_retrieve_shapes <- function(slide, what)
 }
 
 
+
 # retrieve shape objects with matching text pattern across all slides
 # slide: pointer to slide
 # what: text that is searched for
@@ -303,8 +303,8 @@ slides_retrieve_shapes <- function(slides, what)
 
 #' Replace matching text by graphic
 #'
-#' Looks through all shapes and finds a shape with mathicng text pattern.
-#' The shape is deleted and a graphic is inseretd on the shape's parent slide. 
+#' Looks through all shapes and finds a shape with matching text pattern.
+#' The shape is deleted and a graphic is inserted on the shape's parent slide. 
 #'
 #' @param ppt   The ppt object as used in \pkg{R2PPT}.
 #' @param what  Text pattern to match against.  
@@ -334,32 +334,129 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Works but currently not needed.
+# get pointers to all shapes on slide as a list
+# slide:  pointer to slide
+#
+# get_slide_shape_pointers <- function(slide)
+# {
+#   shapes <- slide[["Shapes"]]               # get all shapes on slide
+#   nshapes <- shapes[["Count"]]              # number of shapes
+#   l <- list()
+#   if (nshapes == 0)
+#     return(l)
+#   for (i in 1L:nshapes) {
+#     l[[i]] <- shapes$Item(i)
+#   }
+#   l
+# }
+  
 
   
+# Add an image and fit it inside a given rectangle shape
+# x either one of "left", "center", "right" or a number between 0 (for top) and 1 (for bottom)
+# y either one of "top", "center", "bottom" or a number between 0 (for top) and 1 (for bottom)
+
+PPT.FitGraphicInShape <- function(ppt, file, width=.9, height=.9,
+                                   x="center", y="center", 
+                                   x.offset=0, y.offset=0, 
+                                   proportional=TRUE, 
+                                   maxscale=1)
+{    
+  # checking arguments
+  if (is.character(x))
+    x <- x.sel[pmatch(tolower(x), x.sel, duplicates.ok=FALSE)]  
+  if (is.character(y))
+    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok=FALSE)] 
+  if (is.na(x))
+    stop("x must be numeric or 'center', 'left' or 'right'", call. = FALSE)
+  if (is.na(y))
+    stop("x must be numeric or 'center', 'top' or 'bottom'", call. = FALSE)
   
+    # if the current slide object is not set, an error will occur
+  # it is set when a new slide is added but not when an existing file is opened
+  if (is.null(ppt$Current.Slide)) {  
+    warning("No current slide defined. Slide 1 is used.\n", 
+            "Use 'PPT.UpdateCurrentSlide' to set a slide.", call. = FALSE)
+    ppt <- PPT.UpdateCurrentSlide(ppt, i=1)   # default slide to use
+  }
+  
+  shapes <- ppt$Current.Slide[["Shapes"]]
+  slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
+  slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
+  
+  # include shape with a pixel size not too small. I do not know why, but size
+  # 1,1 would not work and will produce blurry images. For an unknown reason the
+  # size has to be reasonably big. Here the slide's dimensions are used.
+  
+  file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
+  file <- gsub("/", "\\\\", file)           # backslashes must be used
+  
+  img <- shapes$AddPicture(FileName = file, 
+                           LinkToFile = 0, 
+                           SaveWithDocument = -1,   # msoTriState Constant: msoFalse =0, msoTrue=-1
+                           Left = 1, 
+                           Top = 1, 
+                           Width = slide.width, 
+                           Height = slide.height)
+  
+  # rescale picture to full size initial size
+  img$ScaleHeight(1, -1)
+  img$ScaleWidth(1, -1)
+  
+  # calculate optimal scaling for picture to always fit on slide
+  # If width and height are supplied, the graphic is rescaled so that the
+  # condition (img.width <= width & img.height <= height) is satisfied 
+  img.width <- img[["width"]]
+  img.height <- img[["height"]]
+  
+  if (!is.na(width) & width > maxscale)
+    width <- width / slide.width
+  if (!is.na(height) & height > maxscale)
+    height <- height / slide.height  
+  
+  rescale.width.by <- width * slide.width / img.width
+  rescale.height.by <- height * slide.height / img.height
+  width.na <- is.na(width)
+  height.na <- is.na(height)
+  
+  if (!width.na & height.na) 
+    rescale.height.by <- rescale.width.by
+  if (width.na & !height.na)
+    rescale.width.by <- rescale.height.by
+  if (!width.na & !height.na & proportional) {
+    m <- min(rescale.height.by, rescale.width.by)
+    rescale.width.by <- m
+    rescale.height.by <- m 
+  }
+  
+  img$ScaleHeight(rescale.width.by, -1)
+  img$ScaleWidth(rescale.height.by, -1)
+  
+  # locate img horizontally
+  if (x == "center") 
+    x.left <- slide.width / 2 - img[["Width"]] / 2
+  if (x == "left") 
+    x.left <- 0
+  if (x == "right")
+    x.left <- slide.width - img[["Width"]]  
+  if (is.numeric(x))
+    x.left <- x
+  
+  # locate img vertically
+  if (y == "center") 
+    y.top <- slide.height / 2 - img[["Height"]] / 2
+  if (y == "top") 
+    y.top <- 0
+  if (y == "bottom")
+    y.top <- slide.height - img[["Height"]]
+  if (is.numeric(y))
+    y.top <- y
+  
+  img[["Left"]] <- x.left + x.offset
+  img[["Top"]] <- y.top + y.offset
+  invisible(ppt)
+}
 
 
 
