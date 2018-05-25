@@ -1,5 +1,5 @@
 Package: R2PPTaddons
-Version: 0.2.9002
+Version: 0.2.9003
 Date: 2018-05-25
 Title: Functions extending the functionality of R2PPT
 Authors@R: c(person("Mark", "Heckmann", role = c("aut", "cre"),

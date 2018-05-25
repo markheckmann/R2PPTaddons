@@ -1,7 +1,3 @@
-#### Insert graphic ####
-
-
-# tests
 
 # # correct
 # is_percent("1%")
@@ -20,6 +16,7 @@ is_percent_format <- function(x)
   stringr::str_detect(x, "^([0-9]*[.])?[0-9]+%$")  
 }
 
+
 # convert percent string into numeric
 percent_format_to_numeric <- function(x)
 {
@@ -31,61 +28,116 @@ percent_format_to_numeric <- function(x)
 
 
 
-# Add and position a textframe on the slide
 # TODO:
-# - x/y offset as percentage of width / height
-# - autoresize
-# PpAutoSize Enumeration
-# ppAutoSizeMixed	-2	Mixed size.
-# ppAutoSizeNone	0	Does not change size.
-# ppAutoSizeShapeToFitText	1	Auto sizes the shape to fit the text.
-#
-# add bullet list? (0 = No, 1 = Normal, 2 = Numbered)
-PPT.AddTextFrame_ <- function(ppt, 
-                              txt, 
-                              width=.9, 
-                              height=.9,
-                              x="center", 
-                              y="center", 
-                              x.offset=0, 
-                              y.offset=0, 
-                              offset.format = "points",  # either points or percent
-                              x.text.align = "center",
-                              bullet.points = "none", 
-                              bullet.points.color = 0,
-                              text.color = NA,
-                              fill.color = NA,   # fill color
-                              border.color = NA,  # border color
-                              #proportional=TRUE, 
-                              newslide=FALSE, 
-                              maxscale=1,
-                              autosize = TRUE)
+# vjust, hjust offset as fraction of shape width 
+
+#' Adding a textbox to a slide.
+#'
+#' Add a textbox to a slide. YOu can easily position it and modify a limited
+#' number of aspects of its appearance (color, bullet points, etc.)
+#' 
+#' @param ppt The ppt object as used in \pkg{R2PPT}.
+#' @param txt Text to put into the textbox. A vector with length greater 1
+#'   is collapsed using linebreak characters.
+#' @param width Width of graphic. For values smaller than \code{maxscale}
+#'   (default is \code{1}) this refers to a proportion of the current slide's
+#'   width. Values bigger than \code{maxscale} are interpreted as pixels.If
+#'   \code{NA} only the height argument is used for sclaing.
+#' @param height Height of graphic. For values smaller than \code{maxscale}
+#'   (default is \code{1}) this refers to a proportion of the current slide's
+#'   height. Values bigger than \code{maxscale} are interpreted as pixels. If
+#'   \code{NA} only the width argument is used for scaling.
+#' @param x Horizontal placement of the textbox. Either a string
+#'   (\code{"center", "left", "right"}) or a numerical value. Numerical values
+#'   are interpreted as absolute position in pixels counted from the left of the
+#'   slide.
+#' @param y Vertical placenment of the textbox. Either a string (\code{"center",
+#'   "top", "bottom"}) or a numerical value. Numerical values are interpreted as
+#'   absolute position in pixels counted from the top of the slide.
+#' @param xy.format The numeric x and y input will be interpreted either as
+#'   \code{"pixels"} (default) or \code{"percent"} of the slide's total
+#'   width/height. Character input will not be affected.
+#' @param x.offset  Additional horizontal offset in pixel. Used for finetuning
+#'   position on slide.
+#' @param y.offset  Additional horizontal offset in pixel or as percent (see .
+#'   Used for finetuning position on slide.
+#' @param offset.format The offset will be interpreted either as \code{"pixels"}
+#'   (default) or \code{"percent"} of the slide's total width/height.
+#' @param x.text.align Horizontal alignment of text (\code{"left", "center",
+#'   "right"}).
+#' @param bullet.points Whether to treat each new line and vector element as a
+#'   bullet point (\code{"none", "unnumbered", "numbered"}).
+#' @param bullet.points.color Color of bullet points either as hex value or
+#'   color name.
+#' @param text.color Color of text either as hex value or color name.
+#' @param fill.color Background color either as hex value or color name.
+#' @param border.color Border line color either as hex value or color name.
+#' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
+#'   placed on a new slide.
+#' @param maxscale  Threshold below which values are interpreted as proportional
+#'   scaling factors for the \code{width} and \code{height} argument. Above the
+#'   threshold values are interpreted as pixels.
+#'                  
+#' @author Mark Heckmann
+#' @export
+#' @example inst/examples/PPT.AddTextBoxExample.R
+#'
+PPT.AddTextBox <- function( ppt, 
+                            txt, 
+                            width=.9, 
+                            height=.9,
+                            x="center", 
+                            y="center",
+                            xy.format = "points",  # either points or percent
+                            x.offset=0, 
+                            y.offset=0, 
+                            offset.format = "points",  # either points or percent
+                            x.text.align = "center",
+                            bullet.points = "none", 
+                            bullet.points.color = 0,
+                            text.color = NA,
+                            fill.color = NA,   # fill color
+                            border.color = NA,  # border color
+                            newslide=FALSE, 
+                            maxscale=1,
+                            autosize = TRUE)
 {    
   # collapse text if vector longer 1. Textrange "Text" property only allows
   # a single string.
   if (length(txt) > 1) {
     txt <- paste0(txt, collapse="\n")
   }
-    
-  # checking arguments
+  
+  # get width / heught of slides
+  sld.width = slide_width(ppt)
+  sld.height = slide_height(ppt)
+  
+  
+  # checking arguments and implement partial matching of input
   x.sel <- c("center", "left", "right")
   y.sel <- c("center", "top", "bottom")
+  xy.sel <- c("points", "percent")      # offset value in points or percent
   offset.sel <- c("points", "percent")  # offset value in points or percent
   
   if (is.character(x))
     x <- x.sel[pmatch(tolower(x), x.sel, duplicates.ok=FALSE)]  
-  if (is.character(y))
-    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok=FALSE)]  
-  if (is.character(y))
-    offset.format <- offset.sel[pmatch(tolower(offset.format), offset.sel, duplicates.ok=FALSE)]  
-  
   if (is.na(x))
     stop("x must be numeric or 'center', 'left' or 'right'", call. = FALSE)
+  
+  if (is.character(y))
+    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok=FALSE)]  
   if (is.na(y))
     stop("x must be numeric or 'center', 'top' or 'bottom'", call. = FALSE)
+  
+  xy.format <- xy.sel[pmatch(tolower(xy.format), xy.sel, duplicates.ok=FALSE)]  
+  if (is.na(xy.format))
+    stop("xy.format must be 'points' or 'percent'", call. = FALSE)
+ 
+   offset.format <- offset.sel[pmatch(tolower(offset.format), offset.sel, duplicates.ok=FALSE)]  
+  if (is.na(offset.format))
+    stop("offset.format must be 'points' or 'percent'", call. = FALSE)  
 
-  
-  
+
   # Adding a new slide before adding textbox if promted
   if (newslide)
     ppt <- PPT.AddBlankSlide(ppt)  
@@ -162,7 +214,6 @@ PPT.AddTextFrame_ <- function(ppt,
   bullet <- p[["Bullet"]]
   bullet[["Type"]] <- bullet.points.num 
   
-  
 
   ## COLORS  ##
   
@@ -172,14 +223,12 @@ PPT.AddTextFrame_ <- function(ppt,
     f[["RGB"]] <- color_to_integer(bullet.points.color)  
   }
   
-  
   # text color
   if ( !is.na(text.color) ) {
     #f <- shape[["TextFrame"]][["TextRange"]][["Font"]][["Color"]]
     f <- txt_range[["Font"]][["Color"]]
     f[["RGB"]] <- color_to_integer(text.color)
   }
-  
   
   # fill color
   if ( !is.na(fill.color) ) {
@@ -194,9 +243,7 @@ PPT.AddTextFrame_ <- function(ppt,
     l[["Visible"]] <- 1     # make border line visible
     l[["ForeColor"]][["RGB"]] <- color_to_integer(border.color)
   }
-  
 
-  
   # calculate optimal scaling for picture to fit slide
   # if width and height are supplied, the graphic is rescaled so that the
   # condition (img.width <=width & img.height <= height) is satisfied
@@ -229,14 +276,26 @@ PPT.AddTextFrame_ <- function(ppt,
   shp[["width"]] = shp.width * rescale.width.by
   shp[["height"]] = shp.height * rescale.height.by
 
-  # resize box to textsize
+  # resize textbox to textsize
+  # NOTE: not sure if it's needed
   if (autosize) {
     txt_frame[["Autosize"]] <- 1
     tf <- shp[["TextFrame2"]]
     tf[["Autosize"]] <- 2
   }
   
-  # locate shape horizontally
+  # if x,y is percentage it must not be character
+  if (xy.format == "percent" & ( !is.numeric(x) | !is.numeric(y) ) ) {
+    stop("If xy.format = 'percent' x and y must be numeric.", call. = FALSE)
+  }
+    
+  # convert xy to points if passed as percentage
+  if (xy.format == "percent") {
+    x.offset = x * sld.width  # convert to points
+    y.offset = y * sld.height # convert to points
+  }
+  
+  # position textbox horizontally
   if (x == "center") 
     x.left <- slide.width / 2 - shp[["Width"]] / 2
   if (x == "left") 
@@ -245,9 +304,8 @@ PPT.AddTextFrame_ <- function(ppt,
     x.left <- slide.width - shp[["Width"]]
   if (is.numeric(x))
     x.left <- x
-  # TODO: Percent format verarbeiten
-  
-  # locate pic vertically
+
+  # position textbox vertically
   if (y == "center") 
     y.top <- slide.height / 2 - shp[["Height"]] / 2
   if (y == "top") 
@@ -257,20 +315,17 @@ PPT.AddTextFrame_ <- function(ppt,
   if (is.numeric(y))
     y.top <- y
 
-  # convert width/height to points if offset is passed as 
-  # percentage
+  # convert offset to points if passed as percentage
   if (offset.format == "percent") {
-    x.offset = x.offset * slide_width(ppt)  # convert to points
-    y.offset = y.offset * slide_height(ppt) # convert to points
+    x.offset = x.offset * sld.width  # convert to points
+    y.offset = y.offset * sld.height # convert to points
   }
   
   # position shape
   shp[["Left"]] <- x.left + x.offset
   shp[["Top"]] <- y.top + y.offset
   
-  
+  # return PPT object
   invisible(ppt)
 }
-
-
 

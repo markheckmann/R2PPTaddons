@@ -11,23 +11,18 @@ p <- PPT.AddBlankSlide(p)
 
 # align textbox
 txt = c("Line 1", "Line 2", "Line 3")
-p <- PPT.AddTextFrame_(p, txt, 
-                       x = "left", 
-                       y = "top", 
+p <- PPT.AddTextBox(p, txt, 
+                       x = .5, 
+                       y = .5, 
+                       xy.format = "perc",
                        width = .2,
-                       x.offset = .4,
-                       y.offset = .5,
-                       text.color = "darkgreen",
-                       border.color = "darkgreen",
-                       fill.color = "white",
-                       offset.format = "percent",
                        x.text.align = "left", 
                        bullet.points = "unnum",
                        bullet.points.color = "darkgreen")
 
 p <- PPT.AddBlankSlide(p)
 for ( x.offset in seq(0, .9, .1) ) {
-  p <- PPT.AddTextFrame_(p, txt, 
+  p <- PPT.AddTextBox(p, txt, 
                          x = "left", 
                          y = "top", 
                          width = .1,
@@ -44,7 +39,7 @@ for ( x.offset in seq(0, .9, .1) ) {
 
 p <- PPT.AddBlankSlide(p)
 for ( x.offset in seq(0, .9, .15) ) {
-  p <- PPT.AddTextFrame_(p, txt, 
+  p <- PPT.AddTextBox(p, txt, 
                          x = "left", 
                          y = "top", 
                          width = .15,
