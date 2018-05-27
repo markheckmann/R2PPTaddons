@@ -69,7 +69,10 @@ percent_format_to_numeric <- function(x)
 #'   bullet point (\code{"none", "unnumbered", "numbered"}).
 #' @param bullet.points.color Color of bullet points either as hex value or
 #'   color name.
-#' @param text.color Color of text either as hex value or color name.
+#' @param font.color Color of text either as hex value or color name.
+#' @param font.size Text size (default 16).
+#' @param font.bold Bold text (default \code{FALSE}).
+#' @param font.italic Italic text (default \code{FALSE}).
 #' @param fill.color Background color either as hex value or color name.
 #' @param border.color Border line color either as hex value or color name.
 #' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
@@ -95,7 +98,10 @@ PPT.AddTextBox <- function( ppt,
                             x.text.align = "center",
                             bullet.points = "none", 
                             bullet.points.color = 0,
-                            text.color = NA,
+                            font.size = 16,
+                            font.color = "black",
+                            font.bold = FALSE,
+                            font.italic = FALSE,
                             fill.color = NA,   # fill color
                             border.color = NA,  # border color
                             newslide=FALSE, 
@@ -194,6 +200,17 @@ PPT.AddTextBox <- function( ppt,
   p[["Alignment"]] <- x.text.align.num  
   
   
+  ## FONT PROPERTIES ##
+  
+  f <- txt_range[["Font"]]
+  f[["Size"]] <- font.size
+  f[["Bold"]] <- font.bold
+  f[["Italic"]] <- font.italic
+  # color
+  fc <- f[["Color"]]
+  fc[["RGB"]] <- color_to_integer(font.color)
+  
+  
   ## BULLET POINTS ##
   
   # bullet points if requested:
@@ -214,21 +231,14 @@ PPT.AddTextBox <- function( ppt,
   bullet <- p[["Bullet"]]
   bullet[["Type"]] <- bullet.points.num 
   
-
-  ## COLORS  ##
-  
   # bullet point color
   if (bullet.points != "none" & !is.na(bullet.points.color) ) {
     f <- bullet[["Font"]][["Color"]]
     f[["RGB"]] <- color_to_integer(bullet.points.color)  
   }
   
-  # text color
-  if ( !is.na(text.color) ) {
-    #f <- shape[["TextFrame"]][["TextRange"]][["Font"]][["Color"]]
-    f <- txt_range[["Font"]][["Color"]]
-    f[["RGB"]] <- color_to_integer(text.color)
-  }
+
+  ## Shape properties ##
   
   # fill color
   if ( !is.na(fill.color) ) {

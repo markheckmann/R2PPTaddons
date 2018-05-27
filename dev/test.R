@@ -15,12 +15,22 @@ p <- PPT.AddTextBox(p, txt,
                        x = .5, 
                        y = .5, 
                        xy.format = "perc",
+                        font.size=30, 
+                        font.color = "blue",
+                        font.bold = T,
+                        font.italic = T,
                        width = .2,
                        x.text.align = "left", 
-                       bullet.points = "unnum",
+                       bullet.points = "unnumbered",
                        bullet.points.color = "darkgreen")
 
 p <- PPT.AddBlankSlide(p)
+shps <- p$Current.Slide[["Shapes"]]
+s <- shps$Item(1)
+s$Select()
+tmp <- s[["TextFrame"]][["TextRange"]][["Font"]]
+
+
 for ( x.offset in seq(0, .9, .1) ) {
   p <- PPT.AddTextBox(p, txt, 
                          x = "left", 

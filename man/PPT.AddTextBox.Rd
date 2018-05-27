@@ -7,7 +7,8 @@
 PPT.AddTextBox(ppt, txt, width = 0.9, height = 0.9, x = "center",
   y = "center", xy.format = "points", x.offset = 0, y.offset = 0,
   offset.format = "points", x.text.align = "center",
-  bullet.points = "none", bullet.points.color = 0, text.color = NA,
+  bullet.points = "none", bullet.points.color = 0, font.size = 16,
+  font.color = "black", font.bold = FALSE, font.italic = FALSE,
   fill.color = NA, border.color = NA, newslide = FALSE, maxscale = 1,
   autosize = TRUE)
 }
@@ -58,7 +59,13 @@ bullet point (\code{"none", "unnumbered", "numbered"}).}
 \item{bullet.points.color}{Color of bullet points either as hex value or
 color name.}
 
-\item{text.color}{Color of text either as hex value or color name.}
+\item{font.size}{Text size (default 16).}
+
+\item{font.color}{Color of text either as hex value or color name.}
+
+\item{font.bold}{Bold text (default \code{FALSE}).}
+
+\item{font.italic}{Italic text (default \code{FALSE}).}
 
 \item{fill.color}{Background color either as hex value or color name.}
 
