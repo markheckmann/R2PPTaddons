@@ -4,21 +4,23 @@
 			            VERSIONS 
 		       	      ========
 
+Version 0.3 (2018-06-24)
+---------------------
+
+  * 
+  * Add frame of reference to PPT.AddGraphicstoSlide2 to allow better positioning
+
 Version 0.2 (2015-09-01)
 ---------------------
 
-NEW FEATURES
-
   * PPT.UpdateCurrentSlide to set the current slide
   * PPT.ReplaceTextByGraphic: find text, delete it and place graphic on slide
-
-BUG FIXES AND MINOR IMPROVEMENTS
-
   * reworked PPT.AddGraphicstoSlide2
 
 Version 0.1 (2012)
 --------------------------
 
-NEW FEATURES
-
   * PPT.AddGraphicstoSlide2: features for adding graphics to slides
+  
+  
+  
