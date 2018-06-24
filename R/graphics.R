@@ -27,14 +27,26 @@ PPT.UpdateCurrentSlide <- function(ppt, i=NULL, slide=NULL)
 #### Insert graphic ####
 
 
-# This it the workhorse, arguments are explained in function 
+# This is the workhorse, arguments are explained in the function 
 # PPT.AddGraphicstoSlide2 below.
 #
-PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
-                                      x="center", y="center", 
-                                      x.offset=0, y.offset=0, 
-                                      proportional=TRUE, newslide=FALSE, 
-                                      maxscale=1)
+PPT.AddGraphicstoSlide2_ <- function(ppt, 
+                                     file, 
+                                     width=.9, 
+                                     height=.9,
+                                     x="center", 
+                                     y="center", 
+                                     x.offset=0, 
+                                     y.offset=0, 
+                                     # the frame of reference inside which the positioning happens. 
+                                     # default is the corners of the PPT slide 
+                                     frame = list(top=0,    
+                                                  left=0, 
+                                                  width=1,
+                                                  height=1),
+                                     proportional=TRUE, 
+                                     newslide=FALSE, 
+                                     maxscale=1)
 {    
   # checking arguments
   x.sel <- c("center", "left", "right")
@@ -64,13 +76,61 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
   slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
   slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
   
+  # the frame describes the area in which the graphic is placed.
+  # Convert pixel values to fractions of slide dimensions.
+  # We will only operate in fractions of the slide afterwards.
+  #
+  if (!is.na(frame$width) & frame$width > maxscale) {
+    frame$width <- frame$width / slide.width      # frame width as fraction of slide width
+  }
+  if (!is.na(frame$height) & frame$height > maxscale) {
+    frame$height <- frame$height / slide.height   # frame height as fraction of slide height
+  }
+  if (!is.na(frame$top) & frame$top > maxscale) {
+    frame$top <- frame$top / slide.height         # top as fraction of slide height
+  }
+  if (!is.na(frame$left) & frame$left > maxscale) {
+    frame$left <- frame$left / slide.width        # left as fraction of slide width
+  }
+
+  #### HIER WEITER MACHEN ####
+  # TODO: add x, y options
+  # Make sure image width / height are fraction of total slide dimensions. 
+  # Width / height can be passed as fraction of frame or as pixels. 
+  # If pixels are used width/height is converted to fraction instead
+  if (!is.na(width) & width > maxscale) {
+    width <- width / slide.width        # image width as fraction of slide width, e.g. .6}
+  }
+  if (!is.na(height) & height > maxscale) {
+    height <- height / slide.height     # height as fraction of slide width
+  }
+
+  # save all image fractions in list
+  img <- list(top    = 0, 
+              left   = 0,
+              width  = 1,
+              height = 1 )  
+  
+  # convert to fractions of reference frame
+  img$width <- width / frame$width      # image width as fraction of reference frame, e.g. .6 / .8 = .75 
+  img$height <- height / frame$height   # image width as fraction of reference frame, e.g. .6 / .8 = .75 
+  
+  
+  # change slide width / height in case a different frame of reference is selected
+  # i.e. not the whole slide but a smaller region. This feature is important if we want
+  # to only use a subset of the whole slide for adding grahics
+  # TODO: implement frame of reference here.
+  
+  
   # include shape with a pixel size not too small. I do not know why, but size
   # 1,1 would not work and will produce blurry images. For an unknown reason the
   # size has to be reasonably big. Here the slide's dimensions are used.
   
   file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
   file <- gsub("/", "\\\\", file)           # backslashes must be used
-  
+
+  # add image with width/height of slide which may distort the 
+  # original image proportions as image will be fitted to slide
   img <- shapes$AddPicture(FileName = file, 
                            LinkToFile = 0, 
                            SaveWithDocument = -1,   # msoTriState Constant: msoFalse =0, msoTrue=-1
@@ -79,21 +139,23 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
                            Width = slide.width, 
                            Height = slide.height)
   
-  # rescale picture to full size initial size
-  img$ScaleHeight(1, -1)
+  # rescale image to recreate correct image proportions 
+  # this may cause the image to be bigger than slide.
+  # Shape.ScaleHeight method: rescale by a factor
+  # -1 = msoTrue: rescale with regard to original image size
+  img$ScaleHeight(1, -1)  
   img$ScaleWidth(1, -1)
   
-  # calculate optimal scaling for picture to always fit on slide
+  # calculate optimal scaling for picture to always fit in reference frame
   # If width and height are supplied, the graphic is rescaled so that the
   # condition (img.width <= width & img.height <= height) is satisfied 
   img.width <- img[["width"]]
   img.height <- img[["height"]]
 
-  if (!is.na(width) & width > maxscale)
-    width <- width / slide.width
-  if (!is.na(height) & height > maxscale)
-    height <- height / slide.height  
-  
+
+  # calculate factor to rescale the image width / height 
+  # In case both width/height are passed, the smaller factor is used
+  # so the image will fit onto the slide or reference frame
   rescale.width.by <- width * slide.width / img.width
   rescale.height.by <- height * slide.height / img.height
   width.na <- is.na(width)
@@ -108,7 +170,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
     rescale.width.by <- m
     rescale.height.by <- m 
   }
- 
+  # perform rescaling
   img$ScaleHeight(rescale.width.by, -1)
   img$ScaleWidth(rescale.height.by, -1)
 
@@ -196,16 +258,36 @@ PPT.AddGraphicstoSlide2_ <- function(ppt, file, width=.9, height=.9,
 #' @export
 #' @example inst/examples/PPT.AddGraphicstoSlideExample.R
 #'
-PPT.AddGraphicstoSlide2 <- function(ppt, file, width=.9, height=.9,
-                                     x="center", y="center", 
-                                     x.offset=0, y.offset=0, 
-                                     proportional=TRUE, newslide=TRUE, 
-                                     maxscale=1)
+PPT.AddGraphicstoSlide2 <- function(ppt, 
+                                    file, 
+                                    width=.9, 
+                                    height=.9,
+                                    x="center", 
+                                    y="center", 
+                                    x.offset=0, 
+                                    y.offset=0, 
+                                    frame = list(top=NA,    
+                                                 left=NA, 
+                                                 width=NA,
+                                                 height=NA),
+                                    proportional=TRUE, 
+                                    newslide=TRUE, 
+                                    maxscale=1)
 {
+  # iterate over all files
   for (f in file) {
-    ppt <- PPT.AddGraphicstoSlide2_(ppt, file, width, height, x, y, 
-                                    x.offset, y.offset, 
-                                    proportional, newslide, maxscale)
+    ppt <- PPT.AddGraphicstoSlide2_(ppt = ppt, 
+                                    file = file, 
+                                    width = width, 
+                                    height = height, 
+                                    x = x, 
+                                    y = y, 
+                                    x.offset = x.offset, 
+                                    y.offset = y.offset, 
+                                    frame = frame,
+                                    proportional = proportional, 
+                                    newslide = newslide, 
+                                    maxscale = maxscale)
   }
   invisible(ppt)
 }
@@ -351,112 +433,6 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
 #   l
 # }
   
-
-  
-# Add an image and fit it inside a given rectangle shape
-# x either one of "left", "center", "right" or a number between 0 (for top) and 1 (for bottom)
-# y either one of "top", "center", "bottom" or a number between 0 (for top) and 1 (for bottom)
-
-PPT.FitGraphicInShape <- function(ppt, file, width=.9, height=.9,
-                                   x="center", y="center", 
-                                   x.offset=0, y.offset=0, 
-                                   proportional=TRUE, 
-                                   maxscale=1)
-{    
-  # checking arguments
-  if (is.character(x))
-    x <- x.sel[pmatch(tolower(x), x.sel, duplicates.ok=FALSE)]  
-  if (is.character(y))
-    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok=FALSE)] 
-  if (is.na(x))
-    stop("x must be numeric or 'center', 'left' or 'right'", call. = FALSE)
-  if (is.na(y))
-    stop("x must be numeric or 'center', 'top' or 'bottom'", call. = FALSE)
-  
-    # if the current slide object is not set, an error will occur
-  # it is set when a new slide is added but not when an existing file is opened
-  if (is.null(ppt$Current.Slide)) {  
-    warning("No current slide defined. Slide 1 is used.\n", 
-            "Use 'PPT.UpdateCurrentSlide' to set a slide.", call. = FALSE)
-    ppt <- PPT.UpdateCurrentSlide(ppt, i=1)   # default slide to use
-  }
-  
-  shapes <- ppt$Current.Slide[["Shapes"]]
-  slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
-  slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
-  
-  # include shape with a pixel size not too small. I do not know why, but size
-  # 1,1 would not work and will produce blurry images. For an unknown reason the
-  # size has to be reasonably big. Here the slide's dimensions are used.
-  
-  file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
-  file <- gsub("/", "\\\\", file)           # backslashes must be used
-  
-  img <- shapes$AddPicture(FileName = file, 
-                           LinkToFile = 0, 
-                           SaveWithDocument = -1,   # msoTriState Constant: msoFalse =0, msoTrue=-1
-                           Left = 1, 
-                           Top = 1, 
-                           Width = slide.width, 
-                           Height = slide.height)
-  
-  # rescale picture to full size initial size
-  img$ScaleHeight(1, -1)
-  img$ScaleWidth(1, -1)
-  
-  # calculate optimal scaling for picture to always fit on slide
-  # If width and height are supplied, the graphic is rescaled so that the
-  # condition (img.width <= width & img.height <= height) is satisfied 
-  img.width <- img[["width"]]
-  img.height <- img[["height"]]
-  
-  if (!is.na(width) & width > maxscale)
-    width <- width / slide.width
-  if (!is.na(height) & height > maxscale)
-    height <- height / slide.height  
-  
-  rescale.width.by <- width * slide.width / img.width
-  rescale.height.by <- height * slide.height / img.height
-  width.na <- is.na(width)
-  height.na <- is.na(height)
-  
-  if (!width.na & height.na) 
-    rescale.height.by <- rescale.width.by
-  if (width.na & !height.na)
-    rescale.width.by <- rescale.height.by
-  if (!width.na & !height.na & proportional) {
-    m <- min(rescale.height.by, rescale.width.by)
-    rescale.width.by <- m
-    rescale.height.by <- m 
-  }
-  
-  img$ScaleHeight(rescale.width.by, -1)
-  img$ScaleWidth(rescale.height.by, -1)
-  
-  # locate img horizontally
-  if (x == "center") 
-    x.left <- slide.width / 2 - img[["Width"]] / 2
-  if (x == "left") 
-    x.left <- 0
-  if (x == "right")
-    x.left <- slide.width - img[["Width"]]  
-  if (is.numeric(x))
-    x.left <- x
-  
-  # locate img vertically
-  if (y == "center") 
-    y.top <- slide.height / 2 - img[["Height"]] / 2
-  if (y == "top") 
-    y.top <- 0
-  if (y == "bottom")
-    y.top <- slide.height - img[["Height"]]
-  if (is.numeric(y))
-    y.top <- y
-  
-  img[["Left"]] <- x.left + x.offset
-  img[["Top"]] <- y.top + y.offset
-  invisible(ppt)
-}
 
 
 
