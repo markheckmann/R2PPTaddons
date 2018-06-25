@@ -38,6 +38,8 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      y="center", 
                                      x.offset=0, 
                                      y.offset=0, 
+                                     # top=0,
+                                     # left=0,
                                      # the frame of reference inside which the positioning happens. 
                                      # default is the corners of the PPT slide 
                                      frame = list(top=0,    
@@ -48,6 +50,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      newslide=FALSE, 
                                      maxscale=1)
 {    
+  
   # checking arguments
   x.sel <- c("center", "left", "right")
   y.sel <- c("center", "top", "bottom")
@@ -60,7 +63,18 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   if (is.na(y))
     stop("x must be numeric or 'center', 'top' or 'bottom'", call. = FALSE)
  
-  # Adding a new slide before adding graphic
+  # NOTE: arguments x.offset and y.offset will be deprecated
+  # and replaced by left and top cor consistency
+  img <- list(
+      left = x.offset,
+      top = y.offset,
+      width = width,
+      height = height,
+      hjust = x,
+      vjust = y
+  )
+  
+    # Adding a new slide before adding graphic
   if (newslide)
     ppt <- PPT.AddBlankSlide(ppt)  
   
@@ -93,25 +107,28 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
     frame$left <- frame$left / slide.width        # left as fraction of slide width
   }
 
-  #### HIER WEITER MACHEN ####
   # TODO: add x, y options
   # Make sure image width / height are fraction of total slide dimensions. 
   # Width / height can be passed as fraction of frame or as pixels. 
   # If pixels are used width/height is converted to fraction instead
-  if (!is.na(width) & width > maxscale) {
-    width <- width / slide.width        # image width as fraction of slide width, e.g. .6}
+ 
+   # if (!is.na(width) & width > maxscale) {
+  #   width <- width / slide.width        # image width as fraction of slide width, e.g. .6}
+  # }
+  # if (!is.na(height) & height > maxscale) {
+  #   height <- height / slide.height     # height as fraction of slide width
+  # }
+
+  if (!is.na(img$width) & img$width > maxscale) {
+    frame_width_pxl <- frame$width * slide.width
+    img$width <- img$width / frame_width_pxl      # image width as fraction of frame width
   }
-  if (!is.na(height) & height > maxscale) {
-    height <- height / slide.height     # height as fraction of slide width
+  if (!is.na(img$height) & img$height > maxscale) {
+    frame_height_pxl <- frame$height * slide.height
+    img$height <- img$height / frame_height_pxl   # image height as fraction of frame height
   }
 
-  # save all image fractions in list
-  img <- list(top    = 0, 
-              left   = 0,
-              width  = 1,
-              height = 1 )  
-  
-  # convert to fractions of reference frame
+  # convert image w/h to fractions of reference frame
   img$width <- width / frame$width      # image width as fraction of reference frame, e.g. .6 / .8 = .75 
   img$height <- height / frame$height   # image width as fraction of reference frame, e.g. .6 / .8 = .75 
   
