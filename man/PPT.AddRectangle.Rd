@@ -5,8 +5,9 @@
 \title{Add Rectangle shape}
 \usage{
 PPT.AddRectangle(ppt, top = 0.05, left = 0.05, width = 0.9,
-  height = 0.9, fill = "grey", transparency = 0, line.color = "black",
-  line.type = 1, line.size = 1, maxscale = 1, newslide = FALSE)
+  height = 0.9, fill.color = "grey", fill.transparency = 0,
+  line.color = "black", line.type = 1, line.size = 1, maxscale = 1,
+  newslide = FALSE)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -20,12 +21,17 @@ fraction of slides dimensions or as pixel value. Values bigger than
 current slide's width or height. Values bigger than \code{maxscale} are
 interpreted as pixels.}
 
-\item{fill}{Background color either as hex value or color name.}
+\item{fill.color}{Background color either as hex value or R color name.}
+
+\item{fill.transparency}{Transparency of filling (\code{[0,1]}, 
+default is \code{0} = opaque.).}
 
 \item{line.color}{Color of text either as hex value or color name.}
 
 \item{line.type}{\code{1} = solid (default), \code{2-8}= dots, dashes and
 mixtures. See MsoLineDashStyle Enumeration for details.}
+
+\item{line.size}{Thickness of line (default\code{1}).}
 
 \item{maxscale}{Threshold below which values are interpreted as proportional
 scaling factors for the \code{width} and \code{height} argument. Above the

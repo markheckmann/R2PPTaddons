@@ -358,7 +358,10 @@ PPT.AddTextBox <- function( ppt,
 #' @param line.color Color of text either as hex value or color name.
 #' @param line.type \code{1} = solid (default), \code{2-8}= dots, dashes and
 #'   mixtures. See MsoLineDashStyle Enumeration for details.
-#' @param fill Background color either as hex value or color name.
+#' @param line.size Thickness of line (default\code{1}).
+#' @param fill.color Background color either as hex value or R color name.
+#' @param fill.transparency Transparency of filling (\code{[0,1]}, 
+#' default is \code{0} = opaque.).
 #' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
 #'   placed on a new slide.
 #' @param maxscale  Threshold below which values are interpreted as proportional
@@ -373,8 +376,8 @@ PPT.AddRectangle <- function(ppt,
                              left = .05,
                              width = .9,
                              height= .9,
-                             fill="grey", 
-                             transparency = 0, 
+                             fill.color="grey", 
+                             fill.transparency = 0, 
                              line.color = "black",
                              line.type = 1,
                              line.size = 1,
@@ -418,8 +421,8 @@ PPT.AddRectangle <- function(ppt,
   
   # format rectangle
   obj <- rect[["Fill"]] 
-  obj[["ForeColor"]][["RGB"]] = color_to_integer(fill)
-  obj[["Transparency"]] = transparency
+  obj[["ForeColor"]][["RGB"]] = color_to_integer(fill.color)
+  obj[["Transparency"]] = fill.transparency
   
   # format border line
   obj <- rect[["Line"]] 
