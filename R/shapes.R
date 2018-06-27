@@ -339,3 +339,93 @@ PPT.AddTextBox <- function( ppt,
   invisible(ppt)
 }
 
+
+
+
+#' Add Rectangle shape
+#'
+#' Add a rectangle to a slide. YOu can position it and modify a limited number
+#' of aspects of its appearance (color etc.)
+#'
+#' @param ppt The ppt object as used in \pkg{R2PPT}.
+#' @param width,height Dimensions of shape. For values smaller than
+#'   \code{maxscale} (default is \code{1}) this refers to a proportion of the
+#'   current slide's width or height. Values bigger than \code{maxscale} are
+#'   interpreted as pixels.
+#' @param top,left Vertical and horizontal placement of the shape. Either as
+#'   fraction of slides dimensions or as pixel value. Values bigger than
+#'   \code{maxscale} are interpreted as pixels.#'
+#' @param line.color Color of text either as hex value or color name.
+#' @param line.type \code{1} = solid (default), \code{2-8}= dots, dashes and
+#'   mixtures. See MsoLineDashStyle Enumeration for details.
+#' @param fill Background color either as hex value or color name.
+#' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
+#'   placed on a new slide.
+#' @param maxscale  Threshold below which values are interpreted as proportional
+#'   scaling factors for the \code{width} and \code{height} argument. Above the
+#'   threshold values are interpreted as pixels.
+#' @author Mark Heckmann
+#' @export
+#' @example inst/examples/PPT.AddRectangleExample.R
+#'
+PPT.AddRectangle <- function(ppt, 
+                             top = .05,
+                             left = .05,
+                             width = .9,
+                             height= .9,
+                             fill="grey", 
+                             transparency = 0, 
+                             line.color = "black",
+                             line.type = 1,
+                             line.size = 1,
+                             maxscale = 1,
+                             newslide = FALSE)
+{
+  # Adding a new slide before adding textbox if promted
+  if (newslide)
+    ppt <- PPT.AddBlankSlide(ppt)  
+  # if the current slide object is not set, an error will occur
+  if (!newslide & is.null(ppt$Current.Slide)) {  
+    warning("No current slide defined. Slide 1 ist selected.", call. = FALSE)
+    ppt <- PPT.UpdateCurrentSlide(ppt, i=1)
+  }
+  
+  # prepare coordinates and get shape collection
+  shapes <- ppt$Current.Slide[["Shapes"]]
+  slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
+  slide.height <- ppt$pres[["PageSetup"]][["SlideHeight"]]
+  
+  # convert fractions to pixels
+  if (!is.na(width) & width <= maxscale) {
+    width <- width * slide.width      # frame width as fraction of slide width
+  }
+  if (!is.na(height) & height <= maxscale) {
+    height <- height * slide.height   # frame height as fraction of slide height
+  }
+  if (!is.na(top) & top <= maxscale) {
+    top <- top * slide.height         # top as fraction of slide height
+  }
+  if (!is.na(left) & left <= maxscale) {
+    left <- left * slide.width        # left as fraction of slide width
+  }
+  
+  # add rectangle
+  rect <- shapes$AddShape( Type = 1,  # msoShapeRectangle
+                           Left = left, 
+                           Top = top, 
+                           Width =width, 
+                           Height = height)
+  
+  # format rectangle
+  obj <- rect[["Fill"]] 
+  obj[["ForeColor"]][["RGB"]] = color_to_integer(fill)
+  obj[["Transparency"]] = transparency
+  
+  # format border line
+  obj <- rect[["Line"]] 
+  obj[["DashStyle"]] = line.type  # dashed, see: MsoLineDashStyle enumeration
+  obj[["ForeColor"]][["RGB"]] = color_to_integer(line.color)
+  obj[["Weight"]] = line.size
+  
+  invisible(p)
+}
