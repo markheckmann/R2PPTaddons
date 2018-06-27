@@ -36,68 +36,68 @@ devtools::load_all(".")
 # msoShapeRoundedRectangle	5	Abgerundetes Rechteck.
 
 
-# get position of shape
-# (left, top, width, height)
-#
-get_shape_position <- function(shape)
-{
-  list(top = shape[["Top"]],
-       left = shape[["Left"]],
-       width = shape[["Width"]],
-       height = shape[["Height"]]
-  )
-}
-
-
-# get selected shape properties
-#
-get_shape_properties <- function(shape)
-{
-  list(ShapeName = shape[["Name"]],  # "ShapeType Number"
-       ShapeId = shape[["Id"]],
-       Type = shape[["Type"]],
-       AutoShapeType = shape[["AutoShapeType"]]
-       # HasTextFrame = shape[["HasTextFrame"]]
-  )
-}
-
-
-# Add an image and fit it inside a given rectangle shape
-# x either one of "left", "center", "right" or a number between 0 (for top) and 1 (for bottom)
-# y either one of "top", "center", "bottom" or a number between 0 (for top) and 1 (for bottom)
-
-
-PPT.FitGraphicInShape2 <- function(ppt, 
-                                   file, 
-                                   shp,       # shape to place inside
-                                   width=1,   # usually not necessary to change 
-                                   height=1,
-                                   x="center", # position of image inside shape
-                                   y="center", 
-                                   x.offset=0, # offset
-                                   y.offset=0, 
-                                   proportional=TRUE, 
-                                   maxscale=1)
-{
-  pos <- get_shape_position(shp)
-  sld <- shp[["Parent"]]        # get shape's slide
-  ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)   # to insert graphic on correct slide
-  
-  
-  # make calculations to allow exact positioning of graphic inside shape
-  
-  
-  # fit graphic inside shape using standard graphic function
-  PPT.AddGraphicstoSlide2(ppt, 
-                          file, 
-                          newslide=FALSE,
-                          width = pos$width, 
-                          height = pos$height,
-                          x = x, 
-                          y = y, 
-                          x.offset = pos$left, 
-                          y.offset = pos$top)
-}
+# # get position of shape
+# # (left, top, width, height)
+# #
+# get_shape_position <- function(shape)
+# {
+#   list(top = shape[["Top"]],
+#        left = shape[["Left"]],
+#        width = shape[["Width"]],
+#        height = shape[["Height"]]
+#   )
+# }
+# 
+# 
+# # get selected shape properties
+# #
+# get_shape_properties <- function(shape)
+# {
+#   list(ShapeName = shape[["Name"]],  # "ShapeType Number"
+#        ShapeId = shape[["Id"]],
+#        Type = shape[["Type"]],
+#        AutoShapeType = shape[["AutoShapeType"]]
+#        # HasTextFrame = shape[["HasTextFrame"]]
+#   )
+# }
+# 
+# 
+# # Add an image and fit it inside a given rectangle shape
+# # x either one of "left", "center", "right" or a number between 0 (for top) and 1 (for bottom)
+# # y either one of "top", "center", "bottom" or a number between 0 (for top) and 1 (for bottom)
+# 
+# 
+# PPT.FitGraphicInShape2 <- function(ppt, 
+#                                    file, 
+#                                    shp,       # shape to place inside
+#                                    width=1,   # usually not necessary to change 
+#                                    height=1,
+#                                    x="center", # position of image inside shape
+#                                    y="center", 
+#                                    x.offset=0, # offset
+#                                    y.offset=0, 
+#                                    proportional=TRUE, 
+#                                    maxscale=1)
+# {
+#   pos <- get_shape_position(shp)
+#   sld <- shp[["Parent"]]        # get shape's slide
+#   ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)   # to insert graphic on correct slide
+#   
+#   
+#   # make calculations to allow exact positioning of graphic inside shape
+#   
+#   
+#   # fit graphic inside shape using standard graphic function
+#   PPT.AddGraphicstoSlide2(ppt, 
+#                           file, 
+#                           newslide=FALSE,
+#                           width = pos$width, 
+#                           height = pos$height,
+#                           x = x, 
+#                           y = y, 
+#                           x.offset = pos$left, 
+#                           y.offset = pos$top)
+# }
 
 
 
@@ -111,6 +111,10 @@ p <- PPT.AddBlankSlide(p)
 slides <- p$pres[["Slides"]]
 ss <- slides_retrieve_shapes(slides, "GRAFIK")   # get all shape objects that match text pattern 
 #str(lapply(ss, get_type_properties))
+
+PPT.AddGraphicstoSlide2_(p, "")
+PPT.AddGraphicstoSlide2_(p, "", left = .5, width = .45)
+PPT.AddGraphicstoSlide2_(p, "", left = .05, width = .45, top=.1, height=.4)
 
 # get left, top, width, height
 shp <- ss[[1]]

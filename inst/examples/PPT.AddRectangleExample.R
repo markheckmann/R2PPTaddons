@@ -1,6 +1,6 @@
 \dontrun{
   
-# add textbox to middle of slide
+# add rectangle shapes to slide
 p <- PPT.Init(visible=T, method = "RDCOMClient")
 p <- PPT.AddBlankSlide(p)
 p <- PPT.AddRectangle(p, height=.4)

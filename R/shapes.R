@@ -412,6 +412,16 @@ PPT.AddRectangle <- function(ppt,
     left <- left * slide.width        # left as fraction of slide width
   }
   
+
+  # print ccordinates for debugging
+  l <- list(slide.width = slide.width,
+            slide.height = slide.height,
+            top = top, 
+            left = left, 
+            width = width, 
+            height = height)
+  print(l)
+  
   # add rectangle
   rect <- shapes$AddShape( Type = 1,  # msoShapeRectangle
                            Left = left, 

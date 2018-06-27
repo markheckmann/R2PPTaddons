@@ -6,6 +6,7 @@
 \usage{
 PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.9,
   x = "center", y = "center", x.offset = 0, y.offset = 0,
+  frame = list(top = 0, left = 0, width = 1, height = 1),
   proportional = TRUE, newslide = TRUE, maxscale = 1)
 }
 \arguments{
