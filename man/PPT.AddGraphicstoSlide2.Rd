@@ -4,118 +4,122 @@
 \alias{PPT.AddGraphicstoSlide2}
 \title{Adding a graphic to a slide.}
 \usage{
-PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.9,
-  x = "center", y = "center", x.offset = 0, y.offset = 0,
-  frame = list(top = 0, left = 0, width = 1, height = 1),
-  proportional = TRUE, newslide = TRUE, maxscale = 1)
+PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.8, left = 0.05,
+  top = 0.1, hjust = 0.5, vjust = 0.5, frame = list(),
+  proportional = TRUE, newslide = TRUE, maxscale = 1,
+  display.frame = FALSE, display.image = TRUE)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
 
 \item{file}{Path to the graphic file.}
 
-\item{width}{Width of graphic. For values smaller than \code{maxscale}
-(default is \code{1}) this refers to a proportion of the 
-current slide's width. Values bigger than \code{maxscale} 
-are interpreted as pixels.If \code{NA} only the height 
-argument is used for sclaing.}
+\item{width, height}{Width / height of graphic. For values smaller than
+\code{maxscale} (default is \code{1}) refers to a proportion of the current
+slide's width. Values bigger than \code{maxscale} are interpreted as
+pixels.}
 
-\item{height}{Height of graphic. For values smaller than \code{maxscale}
-(default is \code{1}) this refers to a proportion of the 
-current slide's height. Values bigger than \code{maxscale} 
-are interpreted as pixels. If \code{NA} only the width 
-argument is used for scaling.}
+\item{top, left}{Horizontal und vertical alignment of graphic inside frame.
+Either a string (\code{"center", "left", "right"}) or (\code{"center",
+"top", "bottom"}) or a numerical value. Numerical values bigger than
+\code{maxscale} are interpreted as absolute pixels, smaller ones as
+proportions.}
 
-\item{x}{Horizontal placement of graphic. Either a string (\code{"center", 
-"left", "right"}) or a numerical value. Numerical values are 
-interpreted as absolute position in pixels counted
-from the left of the slide.}
-
-\item{y}{Vertical placenment of graphic.Either a string (\code{"center", 
-"top", "bottom"}) or a numerical value. Numerical values are 
-interpreted as absolute position in pixels counted from the 
-top of the slide.}
-
-\item{x.offset}{Additional horizontal offset in pixel. Used for finetuning
-position on slide.}
-
-\item{y.offset}{Additional horizontal offset in pixel. Used for finetuning
-position on slide.}
+\item{hjust, vjust}{Horizontal und vertical alignment of image inside frame.
+Either a string (\code{"center", "left", "right"}) or (\code{"center",
+"top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
+than \code{maxscale} are used for absolute horizontal und vertical offset.}
 
 \item{proportional}{Logical (default \code{TRUE}). Whether scaling preserves
-the aspect ratio of the graphic. See details section for
-additional information.}
+the aspect ratio of the graphic. See details section for additional
+information.}
 
-\item{newslide}{Logical (default is \code{TRUE}) Whether the graphic will
-be placed on a new slide.}
+\item{newslide}{Logical (default is \code{TRUE}) Whether the graphic will be
+placed on a new slide.}
 
-\item{maxscale}{Threshold below which values are interpreted as proportional 
-scaling factors for the \code{width} and \code{height} argument.
-Above the threshold values are interpreted as pixels.}
+\item{maxscale}{Threshold below which values are interpreted as proportional
+scaling factors for the \code{width} and \code{height} argument. Above the
+threshold values are interpreted as pixels.}
+
+\item{display.frame}{Add a shape representing the frame into which the image
+is placed. This makes it easier when developing new slides (default
+\code{FALSE}).}
+
+\item{display.image}{Whether or not the image should be  added (default
+\code{TRUE}).}
 }
 \description{
-\code{PPT.AddGraphicstoSlide2} is a modified version of 
-\code{PPT.AddGraphicstoSlide} from \pkg{R2PPT}. 
-The PPT.AddGraphicstoSlide function has the drawback that it requires
-the size of the graphic to be supplied by the user. If the size is not
-supplied correctly, the graphic is deformed.
+\code{PPT.AddGraphicstoSlide2} is a modified version of
+\code{PPT.AddGraphicstoSlide} from \pkg{R2PPT}. The PPT.AddGraphicstoSlide
+function has the drawback that it requires the size of the graphic to be
+supplied by the user. If the size is not supplied correctly, the graphic is
+deformed. This function keeps the apsect ration intact and offers many
+additional features for placing the image on the slide.
 }
 \note{
-The common use case is to add graphics and scale them 
-                 while preserving their aspect ratio. In the case this 
-                 this is not wanted the argument 
-                 \code{proportional} can be set to \code{FALSE}. 
-                 When the aspect ratio is preserved and both arguments 
-                 \code{width} and \code{height} are supplied, 
-                 the graphic is scaled so that it will not
-                 exceed the size given by one of these values. This is useful when adding a lot of 
-                 graphics of different size. Only using \code{width} may result
-                 in graphics exceeding the slide vertically and vice versa. using 
-                 both parameters (the default) will cause the graphic to be scaled 
-                 so it will fit the slide regardless of its dimensions.
+The common use case is to add graphics and scale them while preserving
+  their aspect ratio. In the case this this is not wanted the argument
+  \code{proportional} can be set to \code{FALSE}. When the aspect ratio is
+  preserved and both arguments \code{width} and \code{height} are supplied,
+  the graphic is scaled so that it will not exceed the size given by one of
+  these values. This is useful when adding a lot of graphics of different
+  size. Only using \code{width} may result in graphics exceeding the slide
+  vertically and vice versa. using both parameters (the default) will cause
+  the graphic to be scaled so it will fit the slide regardless of its
+  dimensions.
 }
 \examples{
 \dontrun{
   
   #### EXAMPLE ####
   
-  #add PNG that comes with the packages
-  file <- "inst/image_1.png"      # comes with package
+  # add PNG that comes with the packages
+  file <- system.file("image_1.png", package = "R2PPTaddons")
   p <- PPT.Init(visible=TRUE, method="RDCOMClient")
   p <- PPT.AddGraphicstoSlide2(p, file)
 
-  # the 'file' argument is vectorized, so it can take multiple images
-  files <- c("inst/image_2.png", "inst/image_3.png")
+  # the argument file is vectorized, so it takes multiple images
+  folder <- system.file(package = "R2PPTaddons")
+  files <- list.files(folder, pattern = ".png", full.names = T)
   p <- PPT.AddGraphicstoSlide2(p, files)    
   
   
   #### MORE EXAMPLES ####
   
+  p <- PPT.Init(visible=TRUE, method="RDCOMClient")
+  file <- system.file("image_1.png", package = "R2PPTaddons")
+  
+  # the image is placed within a frame. To get a better understanding
+  # what happens first only the frame is displayed. Afterwards the image is added.
+  p <- PPT.AddGraphicstoSlide2(p, file, display.frame = TRUE, display.image = FALSE) 
+  p <- PPT.AddGraphicstoSlide2(p, file, newslide=F)    
+  
   # width and height values smaller than maxscale (default is 1) 
   # are interpreted as a proportions of the slide width/height. Values 
   # greater than 1 are taken as absolute pixel width/height.
-  
-  file <- "inst/image_1.png"      # comes with package
-  p <- PPT.Init(visible=TRUE, method="RDCOMClient")
   p <- PPT.AddGraphicstoSlide2(p, file, width=.5)
-  p <- PPT.AddGraphicstoSlide2(p, file, height=.9)
-  p <- PPT.AddGraphicstoSlide2(p, file, width=.5, height=.9)
-  p <- PPT.AddGraphicstoSlide2(p, file, width=.5, height=.9, proportional=FALSE)
+  p <- PPT.AddGraphicstoSlide2(p, file, height=.5)
 
   # using pixel width/height instead of proportions of 
   # available slide width/height
   p <- PPT.AddGraphicstoSlide2(p, file, width=400)
-  p <- PPT.AddGraphicstoSlide2(p, file, height=100)
-  p <- PPT.AddGraphicstoSlide2(p, file, width=400, height=100)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, left=0)
+  
+  # one can also fit the image completely to the frame potentially 
+  # destroying the image's aspect ration, i.e. distorting it
   p <- PPT.AddGraphicstoSlide2(p, file, width=400, height=100, proportional=FALSE)
   
-  # changing x and y placement
-  p <- PPT.AddGraphicstoSlide2(p, file, x="left")
-  p <- PPT.AddGraphicstoSlide2(p, file, x="right", y="bottom")
+  # position the image on slide
+  p <- PPT.AddGraphicstoSlide2(p, file, left=0, width =.5)
+  p <- PPT.AddGraphicstoSlide2(p, file, top=0, height =.5)
   
-  # adding offset for finer placement control  
-  p <- PPT.AddGraphicstoSlide2(p, file, width=400, x="left")
-  p <- PPT.AddGraphicstoSlide2(p, file, width=400, x="left", x.offset=10)
+  # aligment of image inside the frame
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, display.frame = T)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, vjust="top",display.frame = T)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, vjust=0,display.frame = T)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, vjust="bottom",display.frame = T)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, vjust=1, display.frame = T)
+  p <- PPT.AddGraphicstoSlide2(p, file, width=400, vjust=400, display.frame = T)
 }
 }
 \author{
