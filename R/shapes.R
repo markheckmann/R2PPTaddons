@@ -420,9 +420,8 @@ PPT.AddRectangle <- function(ppt,
             left = left, 
             width = width, 
             height = height)
-  print(l)
-  
-  # add rectangle
+
+    # add rectangle
   rect <- shapes$AddShape( Type = 1,  # msoShapeRectangle
                            Left = left, 
                            Top = top, 
@@ -440,5 +439,5 @@ PPT.AddRectangle <- function(ppt,
   obj[["ForeColor"]][["RGB"]] = color_to_integer(line.color)
   obj[["Weight"]] = line.size
   
-  invisible(p)
+  invisible(ppt)
 }
