@@ -475,31 +475,6 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
 
 
 
-# get position of shape
-# (left, top, width, height)
-#
-get_shape_position <- function(shape)
-{
-  list(top = shape[["Top"]],
-       left = shape[["Left"]],
-       width = shape[["Width"]],
-       height = shape[["Height"]]
-  )
-}
-
-
-# get selected shape properties
-#
-get_shape_properties <- function(shape)
-{
-  list(ShapeName = shape[["Name"]],  # "ShapeType Number"
-       ShapeId = shape[["Id"]],
-       Type = shape[["Type"]],
-       AutoShapeType = shape[["AutoShapeType"]]
-       # HasTextFrame = shape[["HasTextFrame"]]
-  )
-}
-
 
 ####.####
 #### ____________________________ ####
