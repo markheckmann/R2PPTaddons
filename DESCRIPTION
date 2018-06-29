@@ -9,8 +9,9 @@ Depends:
 Description: R2PPT is a handy package to create output in PowerPoint documents.
     The R2PPTaddons package extends its features.
 License: GPL (>= 2)
-OS_type: windows
-VignetteBuilder: knitr
+Suggests: RDCOMClient
+SystemRequirements: Windows
+OS_type: windowsVignetteBuilder: knitr
 URL: https://github.com/markheckmann/R2PPTaddons
 BugReports: https://github.com/markheckmann/R2PPTaddons/issues
 RoxygenNote: 6.0.1
