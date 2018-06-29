@@ -1,7 +1,7 @@
 
 
 #### ____________________________ ####
-#### -------------------INSERT GRAPHIC -------------------####
+#### -------------------INSERT IMAGE -------------------####
 
 
 # This is the workhorse, arguments are explained in the function 
@@ -22,6 +22,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      maxscale=1,
                                      display.frame = FALSE,  # show rectangle where graphic is fitted into for dev purposes  
                                      display.image = TRUE,   # add the image? Can be supressed to only add the frame 
+                                     
                                      ...)
 {    
   # frame in which the graphic is fitted
@@ -158,8 +159,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   img[["Left"]] <- f$left * slide.width
   img[["Top"]] <- f$top * slide.height
   
-  }
-  
+
   
   #### __ Align horiz / vert ####
   
@@ -235,6 +235,8 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
       img.top + img.height > slide.height) {
       warning("Image exceeds borders of slide.", call. = FALSE)
   }
+  
+  }  # end if display.image == TRUE
   
   invisible(ppt)
 }
@@ -332,6 +334,66 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
 # the ppt handle would need to be updated in between. At least using mapply 
 # it throws an error so I chose this version which will suffice 
 # for most of my use cases. 
+
+
+
+
+
+
+####.####
+#### ____________________________ ####
+#### ---------------FIT IMAGE INTO SHAPE ------------------####
+
+
+#' Fit an image into an existing shape
+#'
+#' Sometimes shapes serve as placeholders for an image. The function takes a
+#' shape, fits an image in its position and deletes the placeholder shape
+#' afterwards.
+#'
+#' @param ppt The ppt object as used in \pkg{R2PPT}.
+#' @param file Path to the image file.
+#' @param shp Pointer to the shape which the image is fitted into.
+#' @inheritParams PPT.AddGraphicstoSlide2
+#' @param delete.shape Whether to destroy the placeholder shape afterwards
+#'   (default \code{TRUE}).
+#' @author Mark Heckmann
+#' @export
+#' @example inst/examples/PPT.FitGraphicIntoShapeExample.R
+#'   
+PPT.FitGraphicIntoShape <- function(ppt, 
+                                    file, 
+                                    shp,        # shape to place inside
+                                    hjust = "center",
+                                    vjust = "center",
+                                    proportional=TRUE, 
+                                    maxscale=1,
+                                    delete.shape = TRUE)
+{
+  # position of shape and pointer to shape's slide
+  frm <- get_shape_position(shp) 
+  sld <- shp[["Parent"]]
+  
+  # update current slide to insert graphic on correct slide
+  ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)
+  
+  # add graphic using shapes position as the frame 
+  # to fit the image into
+  p <- PPT.AddGraphicstoSlide2(p, 
+                               file, 
+                               frame=frm, 
+                               hjust = hjust,
+                               vjust = vjust,
+                               newslide = F,
+                               maxscale=maxscale)
+  # destroy shape the image was fitted onto
+  if (delete.shape)
+    shp$Delete()
+  
+  # return ppt object
+  invisible(p)
+}
+
 
 
 ####.####
@@ -476,59 +538,6 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
 
 
 
-####.####
-#### ____________________________ ####
-#### ---------------FIT GRAPHIC INTO SHAPE ------------------####
-
-
-#' Fit an image into an existing shape
-#'
-#' Sometimes shapes serve as placeholders for an image. The function takes a
-#' shape, fits an image in its position and deletes the placeholder shape
-#' afterwards.
-#'
-#' @param ppt The ppt object as used in \pkg{R2PPT}.
-#' @param file Path to the image file.
-#' @param shp Pointer to the shape which the image is fitted into.
-#' @inheritParams PPT.AddGraphicstoSlide2
-#' @param delete.shape Whether to destroy the placeholder shape afterwards
-#'   (default \code{TRUE}).
-#' @author Mark Heckmann
-#' @export
-#' @example inst/examples/PPT.FitGraphicIntoShapeExample.R
-#'   
-PPT.FitGraphicIntoShape <- function(ppt, 
-                                   file, 
-                                   shp,        # shape to place inside
-                                   hjust = "center",
-                                   vjust = "center",
-                                   proportional=TRUE, 
-                                   maxscale=1,
-                                   delete.shape = TRUE)
-{
-  # position of shape and pointer to shape's slide
-  frm <- get_shape_position(shp) 
-  sld <- shp[["Parent"]]
-
-  # update current slide to insert graphic on correct slide
-  ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)
- 
-  # add graphic using shapes position as the frame 
-  # to fit the image into
-  p <- PPT.AddGraphicstoSlide2(p, 
-                               file, 
-                               frame=frm, 
-                               hjust = hjust,
-                               vjust = vjust,
-                               newslide = F,
-                               maxscale=maxscale)
-  # destroy shape the image was fitted onto
-  if (delete.shape)
-    shp$Delete()
-  
-  # return ppt object
-  invisible(p)
-}
 
 
 
