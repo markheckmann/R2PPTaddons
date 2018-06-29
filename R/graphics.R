@@ -22,7 +22,15 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      maxscale=1,
                                      display.frame = FALSE,  # show rectangle where graphic is fitted into for dev purposes  
                                      display.image = TRUE,   # add the image? Can be supressed to only add the frame 
-                                     
+                                     line.color = "black",
+                                     line.type = 1,
+                                     line.size = NA,
+                                     shadow.visible = FALSE,
+                                     shadow.type = 21,
+                                     shadow.color = "black",
+                                     shadow.x = 2,
+                                     shadow.y = 2,
+                                     shadow.transparency = .6,
                                      ...)
 {    
   # frame in which the graphic is fitted
@@ -236,6 +244,34 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
       warning("Image exceeds borders of slide.", call. = FALSE)
   }
   
+  
+  
+  #### __ Line and form effect ####
+  
+  ### format border line
+   
+  obj <- img[["Line"]]  # get line format object
+  
+  if ( !is.na(line.size) & line.size != 0 ) {
+    obj[["DashStyle"]] = line.type  # dashed, see: MsoLineDashStyle enumeration
+    obj[["ForeColor"]][["RGB"]] = color_to_integer(line.color)
+    obj[["Weight"]] = line.size
+    obj[["Visible"]] = T
+  }
+
+  ### shadow
+  
+  s <- img[["Shadow"]]  # get shadow format object
+  
+  if (shadow.visible) {
+    s[["Visible"]] = shadow.visible
+    s[["Type"]] = shadow.type
+    s[["ForeColor"]][["RGB"]] = color_to_integer(shadow.color)
+    s[["OffsetX"]] = shadow.x
+    s[["OffsetY"]] = shadow.y
+    s[["Transparency"]] = shadow.transparency
+  }
+  
   }  # end if display.image == TRUE
   
   invisible(ppt)
@@ -280,6 +316,16 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
 #'   \code{FALSE}).
 #' @param display.image  Whether or not the image should be  added (default
 #'   \code{TRUE}).
+#' @param line.color Color of text either as hex value or color name.
+#' @param line.type \code{1} = solid (default), \code{2-8}= dots, dashes and
+#'   mixtures. See MsoLineDashStyle Enumeration for details.
+#' @param line.size Thickness of line (default\code{1}).
+#' @param shadow.visible Show shadow (default \code{FALSE}).
+#' @param shadow.type 1-20, see MsoShadowType enumeration (default \code{21}).
+#' @param shadow.color Color of shadow (default \code{"black"}).
+#' @param shadow.x,shadow.y Size of shadow.
+#' @param shadow.transparency Shadow strength. 
+#' 
 #' @note The common use case is to add graphics and scale them while preserving
 #'   their aspect ratio. In the case this this is not wanted the argument
 #'   \code{proportional} can be set to \code{FALSE}. When the aspect ratio is
@@ -309,7 +355,19 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     newslide=TRUE, 
                                     maxscale=1,
                                     display.frame = FALSE,  # show rectangle where graphic is fitted into for dev purposes  
-                                    display.image = TRUE)
+                                    display.image = TRUE,
+                                    # border line properties
+                                    line.color = "black",
+                                    line.type = 1,
+                                    line.size = 0,
+                                    # shadow
+                                    shadow.visible = FALSE,
+                                    shadow.type = 21,
+                                    shadow.color = "black",
+                                    shadow.x = 3,
+                                    shadow.y = 3,
+                                    shadow.transparency = .6
+                                    )
 {
   # iterate over all files
   for (f in file) {
@@ -326,7 +384,16 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     newslide = newslide, 
                                     maxscale = maxscale,
                                     display.frame = display.frame,
-                                    display.image = display.image)
+                                    display.image = display.image,
+                                    line.color = line.color,
+                                    line.type = line.type,
+                                    line.size = line.size,
+                                    shadow.visible = shadow.visible,
+                                    shadow.type = shadow.type,
+                                    shadow.color = shadow.color,
+                                    shadow.x = shadow.x,
+                                    shadow.y = shadow.y,
+                                    shadow.transparency = shadow.transparency)
   }
   invisible(ppt)
 }

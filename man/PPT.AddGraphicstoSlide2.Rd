@@ -7,7 +7,10 @@
 PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.8, left = 0.05,
   top = 0.1, hjust = 0.5, vjust = 0.5, frame = list(),
   proportional = TRUE, newslide = TRUE, maxscale = 1,
-  display.frame = FALSE, display.image = TRUE)
+  display.frame = FALSE, display.image = TRUE, line.color = "black",
+  line.type = 1, line.size = 0, shadow.visible = FALSE,
+  shadow.type = 21, shadow.color = "black", shadow.x = 3, shadow.y = 3,
+  shadow.transparency = 0.6)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -47,6 +50,23 @@ is placed. This makes it easier when developing new slides (default
 
 \item{display.image}{Whether or not the image should be  added (default
 \code{TRUE}).}
+
+\item{line.color}{Color of text either as hex value or color name.}
+
+\item{line.type}{\code{1} = solid (default), \code{2-8}= dots, dashes and
+mixtures. See MsoLineDashStyle Enumeration for details.}
+
+\item{line.size}{Thickness of line (default\code{1}).}
+
+\item{shadow.visible}{Show shadow (default \code{FALSE}).}
+
+\item{shadow.type}{1-20, see MsoShadowType enumeration (default \code{21}).}
+
+\item{shadow.color}{Color of shadow (default \code{"black"}).}
+
+\item{shadow.x, shadow.y}{Size of shadow.}
+
+\item{shadow.transparency}{Shadow strength.}
 }
 \description{
 \code{PPT.AddGraphicstoSlide2} is a modified version of
