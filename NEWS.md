@@ -1,13 +1,13 @@
 # NEWS
 
 ## TODO
-* MOdify addRectagle to fir arboitary shapes
-* Set style (shadow etc), when adding and image
-
+* No open points
+ 
 ## 0.3 (under preperation)
 * PPT.AddGraphicstoSlideExample rewritten, not compatible with older version any more
 * PPT.FitGraphicInShape2 function to place graphics inside shape
 * Add frame of reference to PPT.AddGraphicstoSlide2 to allow better positioning
+* PPT.AddShape: add arbitarry shapes and modify, position, size, filling and lines
 
 ## 0.2
 

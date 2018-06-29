@@ -341,13 +341,16 @@ PPT.AddTextBox <- function( ppt,
 
 
 
-
-#' Add Rectangle shape
+#' Add various shapes
 #'
-#' Add a rectangle to a slide. YOu can position it and modify a limited number
-#' of aspects of its appearance (color etc.)
+#' Add various shapes to a slide. YOu can position it and modify a limited number
+#' of aspects of its appearance (color etc.). However, not all the parameters for 
+#' all shapes can be implemented.
 #'
 #' @param ppt The ppt object as used in \pkg{R2PPT}.
+#' @param shape.type The shape to add. The possible types are documented in the
+#'   \code{MsoAutoShapeType} enumeration in Microsoft's MSDN docu (e.g.
+#'   rectangle = 1, rounded rectangle = 5, left arrow = 34).
 #' @param width,height Dimensions of shape. For values smaller than
 #'   \code{maxscale} (default is \code{1}) this refers to a proportion of the
 #'   current slide's width or height. Values bigger than \code{maxscale} are
@@ -360,8 +363,8 @@ PPT.AddTextBox <- function( ppt,
 #'   mixtures. See MsoLineDashStyle Enumeration for details.
 #' @param line.size Thickness of line (default\code{1}).
 #' @param fill.color Background color either as hex value or R color name.
-#' @param fill.transparency Transparency of filling (\code{[0,1]}, 
-#' default is \code{0} = opaque.).
+#' @param fill.transparency Transparency of filling (\code{[0,1]}, default is
+#'   \code{0} = opaque.).
 #' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
 #'   placed on a new slide.
 #' @param maxscale  Threshold below which values are interpreted as proportional
@@ -369,20 +372,21 @@ PPT.AddTextBox <- function( ppt,
 #'   threshold values are interpreted as pixels.
 #' @author Mark Heckmann
 #' @export
-#' @example inst/examples/PPT.AddRectangleExample.R
+#' @example inst/examples/PPT.AddShapeExample.R
 #'
-PPT.AddRectangle <- function(ppt, 
-                             top = .05,
-                             left = .05,
-                             width = .9,
-                             height= .9,
-                             fill.color="grey", 
-                             fill.transparency = 0, 
-                             line.color = "black",
-                             line.type = 1,
-                             line.size = 1,
-                             maxscale = 1,
-                             newslide = FALSE)
+PPT.AddShape <- function(ppt, 
+                         shape.type = 1,  # MsoAutoShapeType
+                         top = .05,
+                         left = .05,
+                         width = .9,
+                         height= .9,
+                         fill.color="grey", 
+                         fill.transparency = 0, 
+                         line.color = "black",
+                         line.type = 1,
+                         line.size = 1,
+                         maxscale = 1,
+                         newslide = FALSE)
 {
   # Adding a new slide before adding textbox if promted
   if (newslide)
@@ -412,7 +416,6 @@ PPT.AddRectangle <- function(ppt,
     left <- left * slide.width        # left as fraction of slide width
   }
   
-
   # print ccordinates for debugging
   l <- list(slide.width = slide.width,
             slide.height = slide.height,
@@ -420,9 +423,9 @@ PPT.AddRectangle <- function(ppt,
             left = left, 
             width = width, 
             height = height)
-
-    # add rectangle
-  rect <- shapes$AddShape( Type = 1,  # msoShapeRectangle
+  
+  # add rectangle
+  rect <- shapes$AddShape( Type = shape.type,  # MsoAutoShapeType enum
                            Left = left, 
                            Top = top, 
                            Width =width, 
@@ -441,3 +444,61 @@ PPT.AddRectangle <- function(ppt,
   
   invisible(ppt)
 }
+
+
+
+# # Quasi-vectorization as mapply and Vectorize cannot be applied as
+# # the ppt handle would need to be updated in between. At least using mapply 
+# # it throws an error so I chose this version which will suffice 
+# # for most of my use cases. 
+# 
+# PPT.AddShapeVec <- function(ppt, 
+#                           shape.type = 1,  # MsoAutoShapeType
+#                           top = .05,
+#                           left = .05,
+#                           width = .9,
+#                           height= .9,
+#                           fill.color="grey", 
+#                           fill.transparency = 0, 
+#                           line.color = "black",
+#                           line.type = 1,
+#                           line.size = 1,
+#                           maxscale = 1,
+#                           newslide = FALSE) 
+# {
+#   
+#   # shape.type = 
+#   # top = .05,
+#   # left = .05,
+#   # width = .9,
+#   # height= .9,
+#   # fill.color="grey", 
+#   # fill.transparency = 0, 
+#   # line.color = "black",
+#   # line.type = 1,
+#   # line.size = 1,
+#   # 
+#   
+#   
+#   # iterate over all files
+#   for (f in file) {
+#     ppt <- PPT.AddShape(ppt, 
+#                      shape.type = 1,  # MsoAutoShapeType
+#                      top = .05,
+#                      left = .05,
+#                      width = .9,
+#                      height= .9,
+#                      fill.color="grey", 
+#                      fill.transparency = 0, 
+#                      line.color = "black",
+#                      line.type = 1,
+#                      line.size = 1,
+#                      maxscale = 1,
+#                      newslide = FALSE)
+#   }
+#   
+#   invisible(ppt)
+# }
+
+
+
