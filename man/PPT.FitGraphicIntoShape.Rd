@@ -5,7 +5,7 @@
 \title{Fit an image into an existing shape}
 \usage{
 PPT.FitGraphicIntoShape(ppt, file, shp, hjust = "center", vjust = "center",
-  proportional = TRUE, maxscale = 1, delete.shape = TRUE)
+  proportional = TRUE, maxscale = 1, delete.shape = TRUE, ...)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}

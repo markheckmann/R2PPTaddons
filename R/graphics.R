@@ -435,7 +435,8 @@ PPT.FitGraphicIntoShape <- function(ppt,
                                     vjust = "center",
                                     proportional=TRUE, 
                                     maxscale=1,
-                                    delete.shape = TRUE)
+                                    delete.shape = TRUE, 
+                                    ...)
 {
   # position of shape and pointer to shape's slide
   frm <- get_shape_position(shp) 
@@ -446,19 +447,20 @@ PPT.FitGraphicIntoShape <- function(ppt,
   
   # add graphic using shapes position as the frame 
   # to fit the image into
-  p <- PPT.AddGraphicstoSlide2(p, 
-                               file, 
-                               frame=frm, 
-                               hjust = hjust,
-                               vjust = vjust,
-                               newslide = F,
-                               maxscale=maxscale)
+  ppt <- PPT.AddGraphicstoSlide2(ppt, 
+                                 file, 
+                                 frame=frm, 
+                                 hjust = hjust,
+                                 vjust = vjust,
+                                 newslide = F,
+                                 maxscale=maxscale,
+                                 ...)
   # destroy shape the image was fitted onto
   if (delete.shape)
     shp$Delete()
   
   # return ppt object
-  invisible(p)
+  invisible(ppt)
 }
 
 
@@ -566,6 +568,7 @@ slides_retrieve_shapes <- function(slides, what)
 #'   \code{MsoAutoShapeType} enumeration in Microsoft's MSDN docu.
 #' @param ... Arguments passed on to \code{\link{PPT.AddGraphicstoSlide2}}.
 #' @author Mark Heckmann
+#' @seealso PPT.ReplaceShapeByGraphic
 #' @export
 #' @example inst/examples/PPT.ReplaceTextByGraphicExample.R
 #'
@@ -599,23 +602,54 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, shape.type = 17, ...)
 }
 
 
-# Works but currently not needed.
-# get pointers to all shapes on slide as a list
-# slide:  pointer to slide
-#
-# get_slide_shape_pointers <- function(slide)
-# {
-#   shapes <- slide[["Shapes"]]               # get all shapes on slide
-#   nshapes <- shapes[["Count"]]              # number of shapes
-#   l <- list()
-#   if (nshapes == 0)
-#     return(l)
-#   for (i in 1L:nshapes) {
-#     l[[i]] <- shapes$Item(i)
-#   }
-#   l
-# }
+
+
+#' Replace shape with matching text by graphic
+#'
+#' Looks through all shapes of specified type (default rectangles) and finds 
+#' shapes with matching text pattern. The shape is replaced by an image.
+#' 
+#' @param ppt   The ppt object as used in \pkg{R2PPT}.
+#' @param what  Text pattern to match against.
+#' @param file  Path to the graphic file.
+#' @param shape.type Shape types in which the text pattern is searched for. By
+#'   default only rectangles (\code{shape.type = 1}) are searched. Other shapes,
+#'   e.g. rounded rectangles with text, are ignored. To search all shapes use
+#'   \code{shape.type = NA}. The types are documented in the
+#'   \code{MsoAutoShapeType} enumeration in Microsoft's MSDN docu.
+#' @param ... Arguments passed on to \code{\link{PPT.FitGraphicIntoShape}}.
+#' @author Mark Heckmann
+#' @seealso PPT.ReplaceTextByGraphic
+#' @export
+#' @example inst/examples/PPT.ReplaceTextByGraphicExample.R
+#'
+PPT.ReplaceShapeByGraphic <- function(ppt, what, file, shape.type = 1, ...) 
+{
+  slides <- ppt$pres[["Slides"]]
+  ss <- slides_retrieve_shapes(slides, what)   # get all shape objects that match text pattern 
   
+  # only keep specified shape types
+  if (!is.na(shape.type)) {
+    ss_types <- sapply(ss, function(s) s[["Type"]] )  # get shape type property 
+    ii <- ss_types %in% shape.type                    # only keep shapes of specified type to replace
+    ss <- ss[ii]    
+  }
+  
+  if (length(ss) == 0)
+    warning("No shape with matching text pattern was not found.", call. = FALSE)
+  if (length(ss) > 1)
+    warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
+  
+  # loop over shapes and replace with image
+  for (s in ss) {               # delete from last to first
+    sld <- s[["Parent"]]        # get shape's slide
+    ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
+    PPT.FitGraphicIntoShape(ppt = ppt, file = file, shp = s,  ...)
+  }  
+  
+  invisible(ppt)
+  
+}
 
 
 
