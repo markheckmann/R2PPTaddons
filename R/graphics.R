@@ -463,6 +463,7 @@ PPT.FitGraphicIntoShape <- function(ppt,
 
 
 
+
 ####.####
 #### ____________________________ ####
 #### -------- FIND TEXT AND REPLACE BY GRAPHIC --------####
