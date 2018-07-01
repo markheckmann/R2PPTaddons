@@ -19,26 +19,6 @@ Unfortunately the current slide is only set when a new slide is inserted. It
 is NULL when a file is loaded. This will cause errors sometimes, hence we may
 need to set it manually.
 }
-\examples{
-\dontrun{
-
-# # add graphic to slides with matching and remove text
-# 
-# ppt <- PPT.Open("inst/template.pptx", method="RDCOMClient")
-# 
-# what <- "[[tag 1]]"
-# PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_1.png")
-# 
-# # Note that the text appears twice and the graphic is inserted twice with a warning.
-# what <- "[[tag 2]]"
-# PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_2.png")
-
-}
-
-
-
-
-}
 \author{
 Mark Heckmann
 }
