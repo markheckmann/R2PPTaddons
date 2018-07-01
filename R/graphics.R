@@ -552,26 +552,40 @@ slides_retrieve_shapes <- function(slides, what)
 
 #' Replace matching text by graphic
 #'
-#' Looks through all shapes and finds a shape with matching text pattern.
-#' The shape is deleted and a graphic is inserted on the shape's parent slide. 
+#' Looks through all shapes and finds a shape with matching text pattern. The
+#' shape is deleted and a graphic is inserted on the shape's parent slide.
 #'
 #' @param ppt   The ppt object as used in \pkg{R2PPT}.
-#' @param what  Text pattern to match against.  
+#' @param what  Text pattern to match against.
 #' @param file  Path to the graphic file.
+#' @param shape.type Shape types in which the text pattern is searched for. By
+#'   default only plain text fields (\code{shape.type = 17}) are searched. Other
+#'   shapes, e.g. rectangles with text, are ignored. To search all shapes use
+#'   \code{shape.type = NA}. The types are documented in the
+#'   \code{MsoAutoShapeType} enumeration in Microsoft's MSDN docu.
 #' @param ... Arguments passed on to \code{\link{PPT.AddGraphicstoSlide2}}.
 #' @author Mark Heckmann
 #' @export
 #' @example inst/examples/PPT.ReplaceTextByGraphicExample.R
 #'
-PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
+PPT.ReplaceTextByGraphic <- function(ppt, what, file, shape.type = 17, ...)
 {
   slides <- ppt$pres[["Slides"]]
   ss <- slides_retrieve_shapes(slides, what)   # get all shape objects that match text pattern 
+  
+  # only keep specified shape types
+  if (!is.na(shape.type)) {
+    ss_types <- sapply(ss, function(s) s[["Type"]] )  # get shape type property 
+    ii <- ss_types %in% shape.type                    # only keep shapes of specified type to replace
+    ss <- ss[ii]    
+  }
+
   if (length(ss) == 0)
     warning("No shape with matching text pattern was not found.", call. = FALSE)
   if (length(ss) > 1)
     warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
   
+  # loop over shapes and replace with image
   for (s in ss) {               # delete from last to first
     sld <- s[["Parent"]]        # get shape's slide
     #sld$Select()                # shape select throws error if focus is not on shape's slide, so select parent first
@@ -579,7 +593,8 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, ...)
     ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
     PPT.AddGraphicstoSlide2(ppt, file, newslide=FALSE, ...)
   }  
-  ppt
+  
+  invisible(ppt)
 }
 
 

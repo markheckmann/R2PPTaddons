@@ -4,7 +4,7 @@
 \alias{PPT.ReplaceTextByGraphic}
 \title{Replace matching text by graphic}
 \usage{
-PPT.ReplaceTextByGraphic(ppt, what, file, ...)
+PPT.ReplaceTextByGraphic(ppt, what, file, shape.type = 17, ...)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -13,25 +13,35 @@ PPT.ReplaceTextByGraphic(ppt, what, file, ...)
 
 \item{file}{Path to the graphic file.}
 
+\item{shape.type}{Shape types in which the text pattern is searched for. By
+default only plain text fields (\code{shape.type = 17}) are searched. Other
+shapes, e.g. rectangles with text, are ignored. To search all shapes use
+\code{shape.type = NA}. The types are documented in the
+\code{MsoAutoShapeType} enumeration in Microsoft's MSDN docu.}
+
 \item{...}{Arguments passed on to \code{\link{PPT.AddGraphicstoSlide2}}.}
 }
 \description{
-Looks through all shapes and finds a shape with matching text pattern.
-The shape is deleted and a graphic is inserted on the shape's parent slide.
+Looks through all shapes and finds a shape with matching text pattern. The
+shape is deleted and a graphic is inserted on the shape's parent slide.
 }
 \examples{
 \dontrun{
 
-# # add graphic to slides with matching and remove text
-# 
-# ppt <- PPT.Open("inst/template.pptx", method="RDCOMClient")
-# 
-# what <- "[[tag 1]]"
-# PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_1.png")
-# 
-# # Note that the text appears twice and the graphic is inserted twice with a warning.
-# what <- "[[tag 2]]"
-# PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_2.png")
+file <- system.file("template.pptx", package = "R2PPTaddons")
+ppt <- PPT.Open(file, method="RDCOMClient")
+
+# add graphic to slides with matching text and remove text. Note that by default
+# only text in text boxes is replaced. Text inside rectangles, for example, is
+# not touched unless explicitly prompted. Note also that additional arguments
+# are passed on to PPT.AddGraphicstoSlide2 to specify the position and size of
+# the shape.
+what <- "[[tag 1]]"
+PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_1.png", width = .6)
+
+# Note that the text appears twice and the graphic is inserted twice with a warning.
+what <- "[[tag 2]]"
+PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_2.png")
 
 }
 
