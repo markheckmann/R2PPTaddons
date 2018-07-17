@@ -2,6 +2,7 @@
 
 ## TODO
 * allow wildcards in text matching for replacing?
+* add PPT.AddTable function
 
 ## 0.3 (under development)
 
