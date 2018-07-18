@@ -1,6 +1,6 @@
 
 
-# convert hex or R color value to interger
+# convert hex or R color value to integer
 # used to presnt colors in COM model
 color_to_integer_ <- function(x)
 {
