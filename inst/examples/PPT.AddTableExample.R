@@ -23,7 +23,7 @@ p <- PPT.AddTable(p, m2, rownames = T, top=.7)
 # to fit the number of columns
 p <- PPT.AddBlankSlide(p)
 p <- PPT.AddTable(p, m4, 
-                  text.align = 1:3, 
+                  text.h.align = 1:3, 
                   font.color=c("cyan3", "#4400ff"),
                   font.bold = c(F,F,T), 
                   font.italic = c(T,F),
@@ -31,6 +31,7 @@ p <- PPT.AddTable(p, m4,
 
 #### ROW HEIGHT AND COLUMN WIDTH ####
 
+p <- PPT.AddBlankSlide(p)
 # big header, smaller rows
 p <- PPT.AddTable(p, m4, header.height = 80, row.height = 20)
 # alternating small and big row heights
@@ -41,6 +42,7 @@ p <- PPT.AddTable(p, m4, column.width = c(40, 80))
 
 #### TEXT ALIGNMENT  ####
 
+p <- PPT.AddBlankSlide(p)
 # different vertical alignments for header and rows
 p <- PPT.AddTable(p, m4,
                   header.v.align = "top", 
