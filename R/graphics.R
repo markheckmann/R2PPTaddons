@@ -96,14 +96,15 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   # display frame in which graphic is placed
   # for debugging purposes (default FALSE)
   if (display.frame) {
-    ppt <- PPT.AddRectangle(ppt, 
-                            top = f$top, 
-                            left = f$left,
-                            width = f$width,
-                            height = f$height, 
-                            line.type = 4,
-                            line.color = "grey",
-                            fill.color = "white")    
+    ppt <- PPT.AddShape(ppt, 
+                        shape.type = 1,
+                        top = f$top, 
+                        left = f$left,
+                        width = f$width,
+                        height = f$height, 
+                        line.type = 4,
+                        line.color = "grey",
+                        fill.color = "white")    
   }
 
   #### __ Add image and rescale ####
