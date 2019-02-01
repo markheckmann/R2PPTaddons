@@ -1,6 +1,8 @@
 # NEWS
 
 ## TODO
+
+* allow changing the z-order of scales (#1)
 * allow wildcards in text matching for replacing?
 * add PPT.AddTable function
 
