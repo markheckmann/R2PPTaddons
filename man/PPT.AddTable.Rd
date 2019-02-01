@@ -4,27 +4,103 @@
 \alias{PPT.AddTable}
 \title{Adding a table to a slide.}
 \usage{
-PPT.AddTable(ppt, df, width = 0.9, height = 0.9, cell.height = 0.01,
-  col.align = "left", left = 0.05, top = 0.1, colnames = TRUE,
-  rownames = FALSE, newslide = FALSE, maxscale = 1)
+PPT.AddTable(ppt, df, width = 0.9, height = 0.9,
+  header.height = row.height[1], row.height = 20, column.width = NA,
+  left = 0.05, top = 0.1, font.size = 18, font.bold = 0,
+  font.italic = 0, font.color = "black", text.h.align = 2,
+  text.v.align = 3, header.h.align = text.h.align,
+  header.v.align = text.v.align[1], colnames = TRUE, rownames = FALSE,
+  newslide = FALSE, show.actions = TRUE, maxscale = 1)
+}
+\arguments{
+\item{text.h.align}{Horizontal alignment of text. \code{1 = "left"}, 
+\code{2= "center"} (default), and \code{3 = "right"}. Google \code{PpParagraphAlignment} 
+enumeration for more options. Eizher a string or a numeric values can be used.}
+
+\item{text.v.align}{Vertical alignment of text. \code{1 = "top"}, 
+\code{3= "center"} (dafault), and \code{4 = "bottom"}. Google \code{PpParagraphAlignment} 
+enumeration for more options.}
+
+\item{show.actions}{All actions are visisble by default. Invisible actions 
+will often speed things up.}
 }
 \description{
 Adding a table to a slide.
 }
+\section{TODO}{
+ cell height, cell.width, header.height
+}
+
 \examples{
 \dontrun{
 
 # open new PPT presentation
 p <- PPT.Init(visible=T, method = "RDCOMClient")  
 
-## EXAMPLE 1 ##
+#### EXAMPLE 1 ####
 
 p <- PPT.AddBlankSlide(p)
-m <- mtcars[1:2, ]
-p <- PPT.AddTable(p, m, colnames = F, rownames = F, top=.1)
-p <- PPT.AddTable(p, m, colnames = T, rownames = F, top=.25)
-p <- PPT.AddTable(p, m, colnames = F, rownames = T, top=.45)
-p <- PPT.AddTable(p, m, colnames = T, rownames = T, top=.7)
+m2 <- mtcars[1:2, ]
+m4 <- mtcars[1:4, ]
+m10 <- mtcars[1:10, ]
+
+# no column names
+p <- PPT.AddTable(p, m2, colnames = F)
+# change position and font size
+p <- PPT.AddTable(p, m2, top=.25, font.size=12)
+p <- PPT.AddTable(p, m2, colnames = F, rownames = T, top=.45, font.color="red")
+p <- PPT.AddTable(p, m2, rownames = T, top=.7)
+
+#### FONTS ####
+
+# font and text arguments are vectorized and will be recycled 
+# to fit the number of columns
+p <- PPT.AddBlankSlide(p)
+p <- PPT.AddTable(p, m4, 
+                  text.h.align = 1:3, 
+                  font.color=c("cyan3", "#4400ff"),
+                  font.bold = c(F,F,T), 
+                  font.italic = c(T,F),
+                  font.size = c(10,14,18))
+
+#### ROW HEIGHT AND COLUMN WIDTH ####
+
+p <- PPT.AddBlankSlide(p)
+# big header, smaller rows
+p <- PPT.AddTable(p, m4, header.height = 80, row.height = 20)
+# alternating small and big row heights
+p <- PPT.AddTable(p, m4, header.height = 80, row.height = c(20, 60))
+# big and small columns
+p <- PPT.AddTable(p, m4, column.width = c(40, 80))
+
+
+#### TEXT ALIGNMENT  ####
+
+p <- PPT.AddBlankSlide(p)
+# different vertical alignments for header and rows
+p <- PPT.AddTable(p, m4,
+                  header.v.align = "top", 
+                  text.v.align = "bottom",
+                  row.height = 60)
+# alternate aligment of rows
+p <- PPT.AddTable(p, m4,
+                  header.v.align = "top", 
+                  text.v.align = c("top", "bottom"),   # alternate rows
+                  row.height = 60)
+# different horizontal alignments for columns
+p <- PPT.AddTable(p, m4,
+                  header.h.align = c("right","left"), 
+                  text.h.align = c("left", "right"),   # aternate columns
+                  row.height = 60)
+
+
+#### MISC EXAMPLES  ####
+
+#~ 3 x speed up when setting show.actions to FALSE
+p <- PPT.AddBlankSlide(p)
+system.time( p <- PPT.AddTable(p, m10) )
+p <- PPT.AddBlankSlide(p)
+system.time( p <- PPT.AddTable(p, m10, show.actions=F) )
 
 }
 
