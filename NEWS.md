@@ -2,7 +2,8 @@
 
 ## TODO
 
-* allow changing the z-order of scales (#1)
+* allow changing the z-order of scales (#1) 
+* keep z-order of shape if a shape is replaced
 * allow wildcards in text matching for replacing?
 * add PPT.AddTable function
 
