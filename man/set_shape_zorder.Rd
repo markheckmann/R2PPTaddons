@@ -9,7 +9,7 @@ set_shape_zorder(s, zcmd = 0, zposition = NULL)
 \arguments{
 \item{s}{Shape pointer.}
 
-\item{zcmd}{MsoZOrderCmd enumeration determines change in z-order. 
+\item{zcmd}{MsoZOrderCmd enumeration determines a change in z-order of the shape. 
 Either a number or a text abbreviation (e.g. \code{"front"}).}
 
 \item{zposition}{Set the z-position directly. This is useful to restore 
