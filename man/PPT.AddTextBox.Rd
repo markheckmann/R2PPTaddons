@@ -10,7 +10,7 @@ PPT.AddTextBox(ppt, txt, width = 0.9, height = 0.9, x = "center",
   bullet.points = "none", bullet.points.color = 0, font.size = 16,
   font.color = "black", font.bold = FALSE, font.italic = FALSE,
   fill.color = NA, border.color = NA, newslide = FALSE, maxscale = 1,
-  autosize = TRUE)
+  autosize = TRUE, zcmd = 0, zposition = NULL)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -77,6 +77,13 @@ placed on a new slide.}
 \item{maxscale}{Threshold below which values are interpreted as proportional
 scaling factors for the \code{width} and \code{height} argument. Above the
 threshold values are interpreted as pixels.}
+
+\item{zcmd}{Determine a change in z-order after shape is added. 
+Either a number or a text abbreviation (e.g. \code{"front"}). 
+See \code{\link{set_shape_zorder}} for more details.}
+
+\item{zposition}{Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+Numbers outside the possible range (no of shapes) is fixed to allowed range.}
 }
 \description{
 Add a textbox to a slide. YOu can easily position it and modify a limited

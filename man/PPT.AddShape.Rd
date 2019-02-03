@@ -7,7 +7,7 @@
 PPT.AddShape(ppt, shape.type = 1, top = 0.05, left = 0.05, width = 0.9,
   height = 0.9, fill.color = "grey", fill.transparency = 0,
   line.color = "black", line.type = 1, line.size = 1, maxscale = 1,
-  newslide = FALSE)
+  newslide = FALSE, zcmd = 0, zposition = NULL)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -43,6 +43,13 @@ threshold values are interpreted as pixels.}
 
 \item{newslide}{Logical (default is \code{TRUE}) Whether the graphic will be
 placed on a new slide.}
+
+\item{zcmd}{Determine a change in z-order after shape is added. 
+Either a number or a text abbreviation (e.g. \code{"front"}). 
+See \code{\link{set_shape_zorder}} for more details.}
+
+\item{zposition}{Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+Numbers outside the possible range (no of shapes) is fixed to allowed range.}
 }
 \description{
 Add various shapes to a slide. YOu can position it and modify a limited number

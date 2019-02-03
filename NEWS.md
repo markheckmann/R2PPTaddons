@@ -1,14 +1,12 @@
 # NEWS
 
 ## TODO
-
-* allow changing the z-order of scales (#1) 
-* keep z-order of shape if a shape is replaced
 * allow wildcards in text matching for replacing?
 * add PPT.AddTable function
 
 ## 0.3 (under development)
 
+* set_shape_zorder allows changing z-order of shapes (#1) 
 * PPT.ReplaceShapeByGraphic: Find shape using text pattern and replace by image
 * PPT.ReplaceGraphic: the shapes to operate on (e.g. only text fields) can now be specified.
 * PPT.AddGraphicstoSlideExample rewritten, not compatible with older version any more

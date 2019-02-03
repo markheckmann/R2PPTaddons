@@ -10,7 +10,7 @@ PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.8, left = 0.05,
   display.frame = FALSE, display.image = TRUE, line.color = "black",
   line.type = 1, line.size = 0, shadow.visible = FALSE,
   shadow.type = 21, shadow.color = "black", shadow.x = 3, shadow.y = 3,
-  shadow.transparency = 0.6)
+  shadow.transparency = 0.6, zcmd = 0, zposition = NULL)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -67,6 +67,13 @@ mixtures. See MsoLineDashStyle Enumeration for details.}
 \item{shadow.x, shadow.y}{Size of shadow.}
 
 \item{shadow.transparency}{Shadow strength.}
+
+\item{zcmd}{Determine a change in z-order after shape is added. 
+Either a number or a text abbreviation (e.g. \code{"front"}). 
+See \code{\link{set_shape_zorder}} for more details.}
+
+\item{zposition}{Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+Numbers outside the possible range (no of shapes) is fixed to allowed range.}
 }
 \description{
 \code{PPT.AddGraphicstoSlide2} is a modified version of

@@ -80,6 +80,11 @@ percent_format_to_numeric <- function(x)
 #' @param maxscale  Threshold below which values are interpreted as proportional
 #'   scaling factors for the \code{width} and \code{height} argument. Above the
 #'   threshold values are interpreted as pixels.
+#' @param zcmd Determine a change in z-order after shape is added. 
+#' Either a number or a text abbreviation (e.g. \code{"front"}). 
+#' See \code{\link{set_shape_zorder}} for more details.
+#' @param zposition Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+#' Numbers outside the possible range (no of shapes) is fixed to allowed range.
 #'                  
 #' @author Mark Heckmann
 #' @export
@@ -106,7 +111,9 @@ PPT.AddTextBox <- function( ppt,
                             border.color = NA,  # border color
                             newslide=FALSE, 
                             maxscale=1,
-                            autosize = TRUE)
+                            autosize = TRUE,
+                            zcmd = 0,
+                            zposition = NULL)
 {    
   # collapse text if vector longer 1. Textrange "Text" property only allows
   # a single string.
@@ -335,6 +342,9 @@ PPT.AddTextBox <- function( ppt,
   shp[["Left"]] <- x.left + x.offset
   shp[["Top"]] <- y.top + y.offset
   
+  # z-order
+  set_shape_zorder(rect, zcmd, zposition)
+  
   # return PPT object
   invisible(ppt)
 }
@@ -370,6 +380,12 @@ PPT.AddTextBox <- function( ppt,
 #' @param maxscale  Threshold below which values are interpreted as proportional
 #'   scaling factors for the \code{width} and \code{height} argument. Above the
 #'   threshold values are interpreted as pixels.
+#' @param zcmd Determine a change in z-order after shape is added. 
+#' Either a number or a text abbreviation (e.g. \code{"front"}). 
+#' See \code{\link{set_shape_zorder}} for more details.
+#' @param zposition Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+#' Numbers outside the possible range (no of shapes) is fixed to allowed range.
+#' 
 #' @author Mark Heckmann
 #' @export
 #' @example inst/examples/PPT.AddShapeExample.R
@@ -386,7 +402,9 @@ PPT.AddShape <- function(ppt,
                          line.type = 1,
                          line.size = 1,
                          maxscale = 1,
-                         newslide = FALSE)
+                         newslide = FALSE,
+                         zcmd = 0,
+                         zposition = NULL)
 {
   # Adding a new slide before adding textbox if promted
   if (newslide)
@@ -441,6 +459,10 @@ PPT.AddShape <- function(ppt,
   obj[["DashStyle"]] = line.type  # dashed, see: MsoLineDashStyle enumeration
   obj[["ForeColor"]][["RGB"]] = color_to_integer(line.color)
   obj[["Weight"]] = line.size
+  
+  # z-order
+  set_shape_zorder(rect, zcmd, zposition)
+  
   
   invisible(ppt)
 }

@@ -5,7 +5,8 @@
 \title{Fit an image into an existing shape}
 \usage{
 PPT.FitGraphicIntoShape(ppt, file, shp, hjust = "center", vjust = "center",
-  proportional = TRUE, maxscale = 1, delete.shape = TRUE, ...)
+  proportional = TRUE, maxscale = 1, delete.shape = TRUE, zcmd = "keep",
+  zposition = NULL, ...)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -34,6 +35,15 @@ threshold values are interpreted as pixels.}
 
 \item{delete.shape}{Whether to destroy the placeholder shape afterwards
 (default \code{TRUE}).}
+
+\item{zcmd}{Determine a change in z-order after shape is added. 
+Either a number or a text abbreviation (e.g. \code{"front"}). 
+See \code{\link{set_shape_zorder}} for more details.}
+
+\item{zposition}{Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+Numbers outside the possible range (no of shapes) is fixed to allowed range.}
+
+\item{...}{Parameters are passed on to \code{\link{PPT.AddGraphicstoSlide2}}.}
 }
 \description{
 Sometimes shapes serve as placeholders for an image. The function takes a
@@ -48,8 +58,8 @@ p <- PPT.Init(visible=T, method = "RDCOMClient")
 p <- PPT.AddBlankSlide(p)
 
 # add two rectangle shapes to slide
-p <- PPT.AddRectangle(p, width = .4, left=.1)                      # add a shape to slide
-p <- PPT.AddRectangle(p, width = .4, left=.5, height=.45, top=.5)  # add a shape to slide
+p <- PPT.AddShape(p, width = .4, left=.1)                      # add a shape to slide
+p <- PPT.AddShape(p, width = .4, left=.5, height=.45, top=.5)  # add a shape to slide
 
 # get all shapes on current slide and replace by image
 # shapes are not destroyed to see the image placement

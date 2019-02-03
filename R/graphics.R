@@ -31,6 +31,8 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      shadow.x = 2,
                                      shadow.y = 2,
                                      shadow.transparency = .6,
+                                     zcmd = 0, 
+                                     zposition = NULL,
                                      ...)
 {    
   # frame in which the graphic is fitted
@@ -274,6 +276,13 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   
   }  # end if display.image == TRUE
   
+
+
+  #### __  z-order  ####
+  
+  set_shape_zorder(img, zcmd, zposition)
+  
+  
   invisible(ppt)
 }
 
@@ -325,6 +334,11 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
 #' @param shadow.color Color of shadow (default \code{"black"}).
 #' @param shadow.x,shadow.y Size of shadow.
 #' @param shadow.transparency Shadow strength. 
+#' @param zcmd Determine a change in z-order after shape is added. 
+#' Either a number or a text abbreviation (e.g. \code{"front"}). 
+#' See \code{\link{set_shape_zorder}} for more details.
+#' @param zposition Set the z-position directly using a numeric. A higher z-order means on top of other shapes.
+#' Numbers outside the possible range (no of shapes) is fixed to allowed range.
 #' 
 #' @note The common use case is to add graphics and scale them while preserving
 #'   their aspect ratio. In the case this this is not wanted the argument
@@ -366,7 +380,9 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     shadow.color = "black",
                                     shadow.x = 3,
                                     shadow.y = 3,
-                                    shadow.transparency = .6
+                                    shadow.transparency = .6,
+                                    zcmd = 0, 
+                                    zposition = NULL
                                     )
 {
   # iterate over all files
@@ -393,7 +409,9 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     shadow.color = shadow.color,
                                     shadow.x = shadow.x,
                                     shadow.y = shadow.y,
-                                    shadow.transparency = shadow.transparency)
+                                    shadow.transparency = shadow.transparency,
+                                    zcmd = zcmd, 
+                                    zposition = zposition)
   }
   invisible(ppt)
 }
@@ -424,6 +442,7 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
 #' @inheritParams PPT.AddGraphicstoSlide2
 #' @param delete.shape Whether to destroy the placeholder shape afterwards
 #'   (default \code{TRUE}).
+#' @param ... Parameters are passed on to \code{\link{PPT.AddGraphicstoSlide2}}.   
 #' @author Mark Heckmann
 #' @export
 #' @example inst/examples/PPT.FitGraphicIntoShapeExample.R
@@ -435,9 +454,17 @@ PPT.FitGraphicIntoShape <- function(ppt,
                                     vjust = "center",
                                     proportional=TRUE, 
                                     maxscale=1,
-                                    delete.shape = TRUE, 
+                                    delete.shape = TRUE,
+                                    zcmd = "keep",
+                                    zposition = NULL,
                                     ...)
 {
+  # get z-order of placeholder shape as default
+  if (zcmd == "keep" && is.null(zposition) ) {
+    zposition =  get_shape_properties(shp)$zorder
+    zposition = zposition + ! delete.shape #increment by 1 if shape if not deleted to put it on top
+  }
+    
   # position of shape and pointer to shape's slide
   frm <- get_shape_position(shp) 
   sld <- shp[["Parent"]]
@@ -454,6 +481,8 @@ PPT.FitGraphicIntoShape <- function(ppt,
                                  vjust = vjust,
                                  newslide = F,
                                  maxscale=maxscale,
+                                 zcmd = zcmd,
+                                 zposition = zposition, 
                                  ...)
   # destroy shape the image was fitted onto
   if (delete.shape)
