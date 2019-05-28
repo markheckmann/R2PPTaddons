@@ -85,7 +85,7 @@ percent_format_to_numeric <- function(x)
 #' @export
 #' @example inst/examples/PPT.AddTextBoxExample.R
 #'
-PPT.AddTextBox <- function( ppt, 
+PPT.AddTextBox <- function(ppt, 
                             txt, 
                             width=.9, 
                             height=.9,
@@ -111,7 +111,7 @@ PPT.AddTextBox <- function( ppt,
   # collapse text if vector longer 1. Textrange "Text" property only allows
   # a single string.
   if (length(txt) > 1) {
-    txt <- paste0(txt, collapse="\n")
+    txt <- paste0(txt, collapse = "\n")
   }
   
   # get width / heught of slides
@@ -126,20 +126,20 @@ PPT.AddTextBox <- function( ppt,
   offset.sel <- c("points", "percent")  # offset value in points or percent
   
   if (is.character(x))
-    x <- x.sel[pmatch(tolower(x), x.sel, duplicates.ok=FALSE)]  
+    x <- x.sel[pmatch(tolower(x), x.sel, duplicates.ok = FALSE)]  
   if (is.na(x))
     stop("x must be numeric or 'center', 'left' or 'right'", call. = FALSE)
   
   if (is.character(y))
-    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok=FALSE)]  
+    y <- y.sel[pmatch(tolower(y), y.sel, duplicates.ok = FALSE)]  
   if (is.na(y))
     stop("x must be numeric or 'center', 'top' or 'bottom'", call. = FALSE)
   
-  xy.format <- xy.sel[pmatch(tolower(xy.format), xy.sel, duplicates.ok=FALSE)]  
+  xy.format <- xy.sel[pmatch(tolower(xy.format), xy.sel, duplicates.ok = FALSE)]  
   if (is.na(xy.format))
     stop("xy.format must be 'points' or 'percent'", call. = FALSE)
  
-   offset.format <- offset.sel[pmatch(tolower(offset.format), offset.sel, duplicates.ok=FALSE)]  
+   offset.format <- offset.sel[pmatch(tolower(offset.format), offset.sel, duplicates.ok = FALSE)]  
   if (is.na(offset.format))
     stop("offset.format must be 'points' or 'percent'", call. = FALSE)  
 
@@ -150,7 +150,7 @@ PPT.AddTextBox <- function( ppt,
   # if the current slide object is not set, an error will occur
   if (!newslide & is.null(ppt$Current.Slide)) {  
     warning("No current slide defined. Slide 1 ist selected.", call. = FALSE)
-    ppt <- PPT.UpdateCurrentSlide(ppt, i=1)
+    ppt <- PPT.UpdateCurrentSlide(ppt, i = 1)
   }
   
   # TODO: problem here because current slide is not updated when changing focus interactively
@@ -190,7 +190,7 @@ PPT.AddTextBox <- function( ppt,
   #
   x.text.align.sel <- c("center", "left", "right")  # allowed values
   x.text.align <- x.text.align.sel[pmatch(tolower(x.text.align), 
-                                          x.text.align.sel, duplicates.ok=FALSE)] 
+                                          x.text.align.sel, duplicates.ok = FALSE)] 
   # map alignment string to numeric enumeration
   x.text.align.num <- switch(x.text.align,       
                              "center" = 2,
@@ -223,7 +223,7 @@ PPT.AddTextBox <- function( ppt,
   #
   bullet.points.sel <- c("none", "unnumbered", "numbered")  # allowed values
   bullet.points <- bullet.points.sel[pmatch(tolower(bullet.points), 
-                                          bullet.points.sel, duplicates.ok=FALSE)] 
+                                          bullet.points.sel, duplicates.ok = FALSE)] 
   bullet.points.num <- switch(bullet.points,       
                              "none" = 0,
                              "unnumbered" = 1,
@@ -295,7 +295,7 @@ PPT.AddTextBox <- function( ppt,
   }
   
   # if x,y is percentage it must not be character
-  if (xy.format == "percent" & ( !is.numeric(x) | !is.numeric(y) ) ) {
+  if (xy.format == "percent" & (!is.numeric(x) | !is.numeric(y) )) {
     stop("If xy.format = 'percent' x and y must be numeric.", call. = FALSE)
   }
     
@@ -394,7 +394,7 @@ PPT.AddShape <- function(ppt,
   # if the current slide object is not set, an error will occur
   if (!newslide & is.null(ppt$Current.Slide)) {  
     warning("No current slide defined. Slide 1 ist selected.", call. = FALSE)
-    ppt <- PPT.UpdateCurrentSlide(ppt, i=1)
+    ppt <- PPT.UpdateCurrentSlide(ppt, i = 1)
   }
   
   # prepare coordinates and get shape collection
@@ -428,7 +428,7 @@ PPT.AddShape <- function(ppt,
   rect <- shapes$AddShape( Type = shape.type,  # MsoAutoShapeType enum
                            Left = left, 
                            Top = top, 
-                           Width =width, 
+                           Width = width, 
                            Height = height)
   
   # format rectangle

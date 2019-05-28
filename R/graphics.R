@@ -34,10 +34,10 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      ...)
 {    
   # frame in which the graphic is fitted
-  frm <- list(top=top,    
-              left=left, 
-              width=width,
-              height=height)
+  frm <- list(top = top,    
+              left = left, 
+              width = width,
+              height = height)
   
   # overwrite values passed in frame list
   f <- modifyList(frm, frame)
@@ -46,9 +46,9 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   hjust.sel <- c("center", "left", "right")
   vjust.sel <- c("center", "top", "bottom")
   if (is.character(hjust))
-    hjust <- hjust.sel[pmatch(tolower(hjust), hjust.sel, duplicates.ok=FALSE)]  
+    hjust <- hjust.sel[pmatch(tolower(hjust), hjust.sel, duplicates.ok = FALSE)]  
   if (is.character(vjust))
-    vjust <- vjust.sel[pmatch(tolower(vjust), vjust.sel, duplicates.ok=FALSE)]  
+    vjust <- vjust.sel[pmatch(tolower(vjust), vjust.sel, duplicates.ok = FALSE)]  
   if (is.na(hjust))
     stop("'hjust' must be numeric or 'center', 'left' or 'right'", call. = FALSE)
   if (is.na(vjust))
@@ -63,7 +63,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   if (is.null(ppt$Current.Slide)) {  
       warning("No current slide defined. Slide 1 is used.\n", 
               "Use 'PPT.UpdateCurrentSlide' to set a slide.", call. = FALSE)
-      ppt <- PPT.UpdateCurrentSlide(ppt, i=1)   # default slide to use
+      ppt <- PPT.UpdateCurrentSlide(ppt, i = 1)   # default slide to use
   }
   
   slide.width <- ppt$pres[["PageSetup"]][["SlideWidth"]] 
@@ -444,17 +444,17 @@ PPT.FitGraphicIntoShape <- function(ppt,
   sld <- shp[["Parent"]]
   
   # update current slide to insert graphic on correct slide
-  ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)
+  ppt <- PPT.UpdateCurrentSlide(ppt, slide = sld)
   
   # add graphic using shapes position as the frame 
   # to fit the image into
   ppt <- PPT.AddGraphicstoSlide2(ppt, 
                                  file, 
-                                 frame=frm, 
+                                 frame = frm, 
                                  hjust = hjust,
                                  vjust = vjust,
                                  newslide = F,
-                                 maxscale=maxscale,
+                                 maxscale = maxscale,
                                  ...)
   # destroy shape the image was fitted onto
   if (delete.shape)
@@ -528,7 +528,7 @@ slide_retrieve_shapes <- function(slide, what)
   shapes <- slide[["Shapes"]]
   ii <- shapes_detect_text(shapes, what)
   l <- list()
-  for (i in ii){
+  for (i in ii) {
     l[[i]] <- shapes$Item(i)
   }
   l
@@ -544,7 +544,7 @@ slides_retrieve_shapes <- function(slides, what)
 {
   nslides <- slides[["Count"]]
   r <- list()
-  for (i in 1L:nslides){
+  for (i in 1L:nslides) {
     sld <- slides$Item(i)
     l <- slide_retrieve_shapes(sld, what)
     r <- c(r, l)
@@ -595,8 +595,8 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, shape.type = 17, ...)
     sld <- s[["Parent"]]        # get shape's slide
     #sld$Select()                # shape select throws error if focus is not on shape's slide, so select parent first
     s$Delete()                  # delete shape
-    ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
-    PPT.AddGraphicstoSlide2(ppt, file, newslide=FALSE, ...)
+    ppt <- PPT.UpdateCurrentSlide(ppt, slide = sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
+    PPT.AddGraphicstoSlide2(ppt, file, newslide = FALSE, ...)
   }  
   
   invisible(ppt)
@@ -644,7 +644,7 @@ PPT.ReplaceShapeByGraphic <- function(ppt, what, file, shape.type = 1, ...)
   # loop over shapes and replace with image
   for (s in ss) {               # delete from last to first
     sld <- s[["Parent"]]        # get shape's slide
-    ppt <- PPT.UpdateCurrentSlide(ppt, slide=sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
+    ppt <- PPT.UpdateCurrentSlide(ppt, slide = sld)    # PPT.AddGraphicstoSlide2 needs ppt$CurrentSlide to be set
     PPT.FitGraphicIntoShape(ppt = ppt, file = file, shp = s,  ...)
   }  
   

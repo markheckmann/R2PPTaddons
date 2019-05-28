@@ -1,6 +1,8 @@
 # NEWS
 
 ## TODO
+
+* hide / unhide shapes by pattern
 * allow wildcards in text matching for replacing?
 * add PPT.AddTable function
 
