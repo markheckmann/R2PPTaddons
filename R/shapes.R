@@ -73,6 +73,7 @@ percent_format_to_numeric <- function(x)
 #' @param font.size Text size (default 16).
 #' @param font.bold Bold text (default \code{FALSE}).
 #' @param font.italic Italic text (default \code{FALSE}).
+#' @param font.name Name of font (default \code{NA}).
 #' @param fill.color Background color either as hex value or color name.
 #' @param border.color Border line color either as hex value or color name.
 #' @param newslide  Logical (default is \code{TRUE}) Whether the graphic will be
@@ -102,6 +103,7 @@ PPT.AddTextBox <- function(ppt,
                             font.color = "black",
                             font.bold = FALSE,
                             font.italic = FALSE,
+                            font.name = NA,
                             fill.color = NA,   # fill color
                             border.color = NA,  # border color
                             newslide=FALSE, 
@@ -206,6 +208,9 @@ PPT.AddTextBox <- function(ppt,
   f[["Size"]] <- font.size
   f[["Bold"]] <- font.bold
   f[["Italic"]] <- font.italic
+  if (!is.na(font.name)) 
+    f[["Name"]] <- font.name
+  
   # color
   fc <- f[["Color"]]
   fc[["RGB"]] <- color_to_integer(font.color)

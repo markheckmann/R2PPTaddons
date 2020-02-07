@@ -4,13 +4,31 @@
 \alias{PPT.AddTextBox}
 \title{Adding a textbox to a slide.}
 \usage{
-PPT.AddTextBox(ppt, txt, width = 0.9, height = 0.9, x = "center",
-  y = "center", xy.format = "points", x.offset = 0, y.offset = 0,
-  offset.format = "points", x.text.align = "center",
-  bullet.points = "none", bullet.points.color = 0, font.size = 16,
-  font.color = "black", font.bold = FALSE, font.italic = FALSE,
-  fill.color = NA, border.color = NA, newslide = FALSE, maxscale = 1,
-  autosize = TRUE)
+PPT.AddTextBox(
+  ppt,
+  txt,
+  width = 0.9,
+  height = 0.9,
+  x = "center",
+  y = "center",
+  xy.format = "points",
+  x.offset = 0,
+  y.offset = 0,
+  offset.format = "points",
+  x.text.align = "center",
+  bullet.points = "none",
+  bullet.points.color = 0,
+  font.size = 16,
+  font.color = "black",
+  font.bold = FALSE,
+  font.italic = FALSE,
+  font.name = NA,
+  fill.color = NA,
+  border.color = NA,
+  newslide = FALSE,
+  maxscale = 1,
+  autosize = TRUE
+)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}
@@ -66,6 +84,8 @@ color name.}
 \item{font.bold}{Bold text (default \code{FALSE}).}
 
 \item{font.italic}{Italic text (default \code{FALSE}).}
+
+\item{font.name}{Name of font (default \code{NA}).}
 
 \item{fill.color}{Background color either as hex value or color name.}
 

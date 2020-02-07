@@ -4,13 +4,31 @@
 \alias{PPT.AddGraphicstoSlide2}
 \title{Adding a graphic to a slide.}
 \usage{
-PPT.AddGraphicstoSlide2(ppt, file, width = 0.9, height = 0.8, left = 0.05,
-  top = 0.1, hjust = 0.5, vjust = 0.5, frame = list(),
-  proportional = TRUE, newslide = TRUE, maxscale = 1,
-  display.frame = FALSE, display.image = TRUE, line.color = "black",
-  line.type = 1, line.size = 0, shadow.visible = FALSE,
-  shadow.type = 21, shadow.color = "black", shadow.x = 3, shadow.y = 3,
-  shadow.transparency = 0.6)
+PPT.AddGraphicstoSlide2(
+  ppt,
+  file,
+  width = 0.9,
+  height = 0.8,
+  left = 0.05,
+  top = 0.1,
+  hjust = 0.5,
+  vjust = 0.5,
+  frame = list(),
+  proportional = TRUE,
+  newslide = TRUE,
+  maxscale = 1,
+  display.frame = FALSE,
+  display.image = TRUE,
+  line.color = "black",
+  line.type = 1,
+  line.size = 0,
+  shadow.visible = FALSE,
+  shadow.type = 21,
+  shadow.color = "black",
+  shadow.x = 3,
+  shadow.y = 3,
+  shadow.transparency = 0.6
+)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}

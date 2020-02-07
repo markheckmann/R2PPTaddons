@@ -4,10 +4,21 @@
 \alias{PPT.AddShape}
 \title{Add various shapes}
 \usage{
-PPT.AddShape(ppt, shape.type = 1, top = 0.05, left = 0.05, width = 0.9,
-  height = 0.9, fill.color = "grey", fill.transparency = 0,
-  line.color = "black", line.type = 1, line.size = 1, maxscale = 1,
-  newslide = FALSE)
+PPT.AddShape(
+  ppt,
+  shape.type = 1,
+  top = 0.05,
+  left = 0.05,
+  width = 0.9,
+  height = 0.9,
+  fill.color = "grey",
+  fill.transparency = 0,
+  line.color = "black",
+  line.type = 1,
+  line.size = 1,
+  maxscale = 1,
+  newslide = FALSE
+)
 }
 \arguments{
 \item{ppt}{The ppt object as used in \pkg{R2PPT}.}

@@ -14,4 +14,4 @@ SystemRequirements: Windows
 OS_type: windowsVignetteBuilder: knitr
 URL: https://github.com/markheckmann/R2PPTaddons
 BugReports: https://github.com/markheckmann/R2PPTaddons/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.0.2

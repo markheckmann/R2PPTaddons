@@ -8,6 +8,7 @@
 
 ## 0.3 (under development)
 
+* PPT.AddTextBox: Font name argument added
 * PPT.ReplaceShapeByGraphic: Find shape using text pattern and replace by image
 * PPT.ReplaceGraphic: the shapes to operate on (e.g. only text fields) can now be specified.
 * PPT.AddGraphicstoSlideExample rewritten, not compatible with older version any more
