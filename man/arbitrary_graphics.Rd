@@ -11,7 +11,7 @@ arbitrary_graphics(n, dev = "png", ...)
 
 \item{dev}{dev of output device (\code{"png", "bmp", "jpeg"}).}
 
-\item{...}{Arguments passed on to tze specific graphic 
+\item{...}{Arguments passed on to tze specific graphic
 device function (\code{png, bmp, jpeg})}
 }
 \value{

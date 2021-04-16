@@ -22,7 +22,7 @@ e.g. rounded rectangles with text, are ignored. To search all shapes use
 \item{...}{Arguments passed on to \code{\link{PPT.FitGraphicIntoShape}}.}
 }
 \description{
-Looks through all shapes of specified type (default rectangles) and finds 
+Looks through all shapes of specified type (default rectangles) and finds
 shapes with matching text pattern. The shape is replaced by an image.
 }
 \examples{

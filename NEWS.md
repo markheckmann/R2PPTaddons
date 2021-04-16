@@ -8,6 +8,7 @@
 
 ## 0.3 (under development)
 
+* PPT.UpdateAutosizedTextboxes: Update size of text boxes with autosize set to true
 * PPT.AddTextBox: Font name argument added
 * PPT.ReplaceShapeByGraphic: Find shape using text pattern and replace by image
 * PPT.ReplaceGraphic: the shapes to operate on (e.g. only text fields) can now be specified.

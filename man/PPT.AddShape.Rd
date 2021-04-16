@@ -57,7 +57,7 @@ placed on a new slide.}
 }
 \description{
 Add various shapes to a slide. YOu can position it and modify a limited number
-of aspects of its appearance (color etc.). However, not all the parameters for 
+of aspects of its appearance (color etc.). However, not all the parameters for
 all shapes can be implemented.
 }
 \examples{

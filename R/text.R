@@ -26,3 +26,53 @@ PPT.ReplaceTextByText <- function(ppt, what, replace, ...)
   }  
   ppt
 }
+
+
+# . ----
+autosize_text_range <- function(shp) 
+{
+  has_text <- shp[["TextFrame2"]][["HasText"]] == -1
+  if (has_text) {
+    text_frame <- shp[["TextFrame2"]]
+    autosize <- text_frame[["AutoSize"]] == 1   # msoAutoSizeTextToFitShape = 1
+    if (autosize) {
+      text_frame[["AutoSize"]] <- 0   #turn off an on to trigger autoresizing
+      text_frame[["AutoSize"]] <- 1   # msoAutoSizeTextToFitShape = 1
+      # Alterative:
+      # tr <- shp[["TextFrame2"]][["TextRange"]]
+      # tr[["Text"]] <- tr[["Text"]]    # trick to trigger autoresizing
+    }
+  }
+  shp
+}
+
+update_all_autosize_text_ranges_current_slide <- function(ppt) 
+{
+  shps <- PPT.ShapesOnCurrentSlide(ppt)
+  l <- lapply(shps, autosize_text_range)
+  invisible(NULL)
+}
+
+
+#' Autosize textboxes
+#' 
+#' Sometimes text boxes which are set to autosize are not properly resized
+#' when the file is opened. The autosizing is triggered by the function.
+#' 
+#' @param ppt   The ppt object as used in \pkg{R2PPT}.
+#' @param slide_index Slides indexes for which to update textboxes (default `NULL` = all slides).
+#' @export
+#' 
+PPT.UpdateAutosizedTextboxes <- function(ppt, slide_index = NULL) 
+{
+  n_slides <- ppt$pres[["Slides"]][["Count"]]
+  if (is.null(slide_index)) {
+    slide_index <- seq_len(n_slides)
+  }
+  for (i in slide_index) {
+    ppt <- PPT.UpdateCurrentSlide(ppt, i = i)
+    update_all_autosize_text_ranges_current_slide(ppt)
+  }
+  ppt
+}
+

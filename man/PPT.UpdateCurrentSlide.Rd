@@ -14,7 +14,7 @@ PPT.UpdateCurrentSlide(ppt, i = NULL, slide = NULL)
 \item{slide}{A slide object as alternative to setting the index.}
 }
 \description{
-R2PPT uses an object to store the current slide amongst other things. 
+R2PPT uses an object to store the current slide amongst other things.
 Unfortunately the current slide is only set when a new slide is inserted. It
 is NULL when a file is loaded. This will cause errors sometimes, hence we may
 need to set it manually.

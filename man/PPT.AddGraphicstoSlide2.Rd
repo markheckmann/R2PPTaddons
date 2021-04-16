@@ -42,13 +42,13 @@ pixels.}
 
 \item{top, left}{Horizontal und vertical alignment of graphic inside frame.
 Either a string (\code{"center", "left", "right"}) or (\code{"center",
-"top", "bottom"}) or a numerical value. Numerical values bigger than
+  "top", "bottom"}) or a numerical value. Numerical values bigger than
 \code{maxscale} are interpreted as absolute pixels, smaller ones as
 proportions.}
 
 \item{hjust, vjust}{Horizontal und vertical alignment of image inside frame.
 Either a string (\code{"center", "left", "right"}) or (\code{"center",
-"top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
+  "top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
 than \code{maxscale} are used for absolute horizontal und vertical offset.}
 
 \item{proportional}{Logical (default \code{TRUE}). Whether scaling preserves
@@ -96,15 +96,15 @@ additional features for placing the image on the slide.
 }
 \note{
 The common use case is to add graphics and scale them while preserving
-  their aspect ratio. In the case this this is not wanted the argument
-  \code{proportional} can be set to \code{FALSE}. When the aspect ratio is
-  preserved and both arguments \code{width} and \code{height} are supplied,
-  the graphic is scaled so that it will not exceed the size given by one of
-  these values. This is useful when adding a lot of graphics of different
-  size. Only using \code{width} may result in graphics exceeding the slide
-  vertically and vice versa. using both parameters (the default) will cause
-  the graphic to be scaled so it will fit the slide regardless of its
-  dimensions.
+their aspect ratio. In the case this this is not wanted the argument
+\code{proportional} can be set to \code{FALSE}. When the aspect ratio is
+preserved and both arguments \code{width} and \code{height} are supplied,
+the graphic is scaled so that it will not exceed the size given by one of
+these values. This is useful when adding a lot of graphics of different
+size. Only using \code{width} may result in graphics exceeding the slide
+vertically and vice versa. using both parameters (the default) will cause
+the graphic to be scaled so it will fit the slide regardless of its
+dimensions.
 }
 \examples{
 \dontrun{

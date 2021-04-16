@@ -1,6 +1,6 @@
 Package: R2PPTaddons
 Version: 0.3
-Date: 2018-07-02
+Date: 2021-04-16
 Title: Functions extending the functionality of R2PPT
 Authors@R: c(person("Mark", "Heckmann", role = c("aut", "cre"),
     email = "heckmann.mark@gmail.com"))
@@ -14,4 +14,5 @@ SystemRequirements: Windows
 OS_type: windowsVignetteBuilder: knitr
 URL: https://github.com/markheckmann/R2PPTaddons
 BugReports: https://github.com/markheckmann/R2PPTaddons/issues
-RoxygenNote: 7.0.2
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

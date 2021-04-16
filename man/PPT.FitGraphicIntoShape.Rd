@@ -25,12 +25,12 @@ PPT.FitGraphicIntoShape(
 
 \item{hjust}{Horizontal und vertical alignment of image inside frame.
 Either a string (\code{"center", "left", "right"}) or (\code{"center",
-"top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
+  "top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
 than \code{maxscale} are used for absolute horizontal und vertical offset.}
 
 \item{vjust}{Horizontal und vertical alignment of image inside frame.
 Either a string (\code{"center", "left", "right"}) or (\code{"center",
-"top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
+  "top", "bottom"}) or a numerical value between \code{[0,1]}. Values bigger
 than \code{maxscale} are used for absolute horizontal und vertical offset.}
 
 \item{proportional}{Logical (default \code{TRUE}). Whether scaling preserves

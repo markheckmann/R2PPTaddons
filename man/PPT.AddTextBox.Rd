@@ -52,7 +52,7 @@ are interpreted as absolute position in pixels counted from the left of the
 slide.}
 
 \item{y}{Vertical placenment of the textbox. Either a string (\code{"center",
-"top", "bottom"}) or a numerical value. Numerical values are interpreted as
+  "top", "bottom"}) or a numerical value. Numerical values are interpreted as
 absolute position in pixels counted from the top of the slide.}
 
 \item{xy.format}{The numeric x and y input will be interpreted either as
