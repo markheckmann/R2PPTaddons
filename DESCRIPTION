@@ -1,6 +1,6 @@
 Package: R2PPTaddons
 Version: 0.3
-Date: 2021-04-16
+Date: 2022-04-15
 Title: Functions extending the functionality of R2PPT
 Authors@R: c(person("Mark", "Heckmann", role = c("aut", "cre"),
     email = "heckmann.mark@gmail.com"))
@@ -15,4 +15,7 @@ OS_type: windowsVignetteBuilder: knitr
 URL: https://github.com/markheckmann/R2PPTaddons
 BugReports: https://github.com/markheckmann/R2PPTaddons/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
+Encoding: UTF-8
+StagedInstall: no
+

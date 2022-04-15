@@ -31,6 +31,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
                                      shadow.x = 2,
                                      shadow.y = 2,
                                      shadow.transparency = .6,
+                                     z.order = 0, # 0 = front, 1 = back
                                      ...)
 {    
   # frame in which the graphic is fitted
@@ -275,6 +276,8 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   
   }  # end if display.image == TRUE
   
+  z_order(img) <- z.order
+  
   invisible(ppt)
 }
 
@@ -325,8 +328,10 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
 #' @param shadow.type 1-20, see MsoShadowType enumeration (default \code{21}).
 #' @param shadow.color Color of shadow (default \code{"black"}).
 #' @param shadow.x,shadow.y Size of shadow.
-#' @param shadow.transparency Shadow strength. 
-#' 
+#' @param shadow.transparency Shadow strength.
+#' @param z.order (numeric). Set z-order. An integer corresponding to the
+#'   MsoZOrderCmd Enum (e.g. 0 = front, 1 = back).
+#'
 #' @note The common use case is to add graphics and scale them while preserving
 #'   their aspect ratio. In the case this this is not wanted the argument
 #'   \code{proportional} can be set to \code{FALSE}. When the aspect ratio is
@@ -367,7 +372,8 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     shadow.color = "black",
                                     shadow.x = 3,
                                     shadow.y = 3,
-                                    shadow.transparency = .6
+                                    shadow.transparency = .6,
+                                    z.order = 0 # 0 = front, 1 = back
                                     )
 {
   # iterate over all files
@@ -394,7 +400,8 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
                                     shadow.color = shadow.color,
                                     shadow.x = shadow.x,
                                     shadow.y = shadow.y,
-                                    shadow.transparency = shadow.transparency)
+                                    shadow.transparency = shadow.transparency,
+                                    z.order = z.order)
   }
   invisible(ppt)
 }
@@ -425,7 +432,6 @@ PPT.AddGraphicstoSlide2 <- function(ppt,
 #' @inheritParams PPT.AddGraphicstoSlide2
 #' @param delete.shape Whether to destroy the placeholder shape afterwards
 #'   (default \code{TRUE}).
-#' @author Mark Heckmann
 #' @export
 #' @example inst/examples/PPT.FitGraphicIntoShapeExample.R
 #'   

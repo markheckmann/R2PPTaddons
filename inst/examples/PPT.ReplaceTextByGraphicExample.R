@@ -23,9 +23,9 @@ PPT.ReplaceTextByGraphic(ppt, what, file = "inst/image_2.png")
 
 #### CASE 2: REPLACE SHAPE BY GRAPHIC ####
 
-# replace rectangle with mathcing text by graphic
+# replace rectangle with matching text by graphic and move to back
 what <- "[[tag 1]]"
-PPT.ReplaceShapeByGraphic(ppt, what, file = "inst/image_1.png")
+PPT.ReplaceShapeByGraphic(ppt, what, file = "inst/image_1.png", z.order = 1)
 
 # Note  that additional arguments are passed on to PPT.FitGraphicIntoShape and 
 # subsequently to PPT.AddGraphicstoSlide2, e.g. to specify the appearance of the image.

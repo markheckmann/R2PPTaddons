@@ -8,6 +8,10 @@
 
 ## 0.3 (under development)
 
+* Updated docs and twekaed DESCRIPTION (UTF8, no staged installation)
+* Add `z.order` argument to `PPT.AddGraphicstoSlide2`, tweaked examples and sample PPTX 
+  to show feature
+* Add `MsoZOrderCmd` enumeration
 * PPT.UpdateAutosizedTextboxes: Update size of text boxes with autosize set to true
 * PPT.AddTextBox: Font name argument added
 * PPT.ReplaceShapeByGraphic: Find shape using text pattern and replace by image

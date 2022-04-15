@@ -1,4 +1,9 @@
 # enumerations
 
 enumeration <- list()  
-enumeration$MsoShapeType <- read.csv("inst/extdata/MsoShapeType.txt")
+
+file <- system.file("extdata", "MsoShapeType.csv", package = "R2PPTaddons")
+enumeration$MsoShapeType <- read.csv(file)
+
+file <- system.file("extdata", "MsoZOrderCmd.csv", package = "R2PPTaddons")
+enumeration$MsoZOrderCmd <- read.csv(file)

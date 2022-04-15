@@ -27,7 +27,8 @@ PPT.AddGraphicstoSlide2(
   shadow.color = "black",
   shadow.x = 3,
   shadow.y = 3,
-  shadow.transparency = 0.6
+  shadow.transparency = 0.6,
+  z.order = 0
 )
 }
 \arguments{
@@ -85,6 +86,9 @@ mixtures. See MsoLineDashStyle Enumeration for details.}
 \item{shadow.x, shadow.y}{Size of shadow.}
 
 \item{shadow.transparency}{Shadow strength.}
+
+\item{z.order}{(numeric). Set z-order. An integer corresponding to the
+MsoZOrderCmd Enum (e.g. 0 = front, 1 = back).}
 }
 \description{
 \code{PPT.AddGraphicstoSlide2} is a modified version of

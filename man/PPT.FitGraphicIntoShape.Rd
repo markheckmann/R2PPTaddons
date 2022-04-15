@@ -73,6 +73,3 @@ p <- PPT.FitGraphicIntoShape(p, file, shp=s[[2]], vjust="bottom", delete.shape =
 
 
 }
-\author{
-Mark Heckmann
-}

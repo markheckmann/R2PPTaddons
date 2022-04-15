@@ -1,0 +1,7 @@
+Name,Value,Description
+msoBringToFront,0,Bring shape to the front
+msoSendToBack,1,Send shape to the back
+msoBringForward,2,Bring shape forward
+msoSendBackward,3,Send shape backward
+msoBringInFrontOfText,4,Bring shape in front of text
+msoSendBehindText,5,Send shape behind text
