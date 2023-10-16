@@ -26,6 +26,19 @@ percent_format_to_numeric <- function(x)
 }
 
 
+# Issue warning if rero or more than one match has been found
+# what: search term
+warn_if_zero_or_many <- function(s, what="") {
+  if (length(s) == 0) {
+    msg <- paste0("No shape with matching text pattern not found for '", what,"'")
+    warning(msg, call. = FALSE)
+  }
+  if (length(s) > 1) {
+    msg <- paste0("More than one shape with matching text pattern found and replaced for'", what,"'")
+    warning(msg, call. = FALSE)
+  }  
+}
+
 
 
 # TODO:

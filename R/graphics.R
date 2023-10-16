@@ -114,7 +114,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   # 1,1 would not work and will produce blurry images. For an unknown reason the
   # size has to be reasonably big. Here the slide's dimensions are used.
 
-  file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
+  file <- normalizePath(file)               # absolute paths must be supplied to COM object
   file <- gsub("/", "\\\\", file)           # backslashes must be used
 
   # insert image if not supressed (default)
@@ -591,10 +591,7 @@ PPT.ReplaceTextByGraphic <- function(ppt, what, file, shape.type = 17, ...)
     ss <- ss[ii]    
   }
 
-  if (length(ss) == 0)
-    warning("No shape with matching text pattern was not found.", call. = FALSE)
-  if (length(ss) > 1)
-    warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
+  warn_if_zero_or_many(ss, what)
   
   # loop over shapes and replace with image
   for (s in ss) {               # delete from last to first
@@ -642,10 +639,7 @@ PPT.ReplaceShapeByGraphic <- function(ppt, what, file, shape.type = 1, ...)
     ss <- ss[ii]    
   }
   
-  if (length(ss) == 0)
-    warning("No shape with matching text pattern was not found.", call. = FALSE)
-  if (length(ss) > 1)
-    warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
+  warn_if_zero_or_many(ss, what)
   
   # loop over shapes and replace with image
   for (s in ss) {               # delete from last to first

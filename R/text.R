@@ -16,11 +16,7 @@ PPT.ReplaceTextByText <- function(ppt, what, replace, ...)
 {
   slides <- ppt$pres[["Slides"]]
   ss <- slides_retrieve_shapes(slides, what)   # get all shape objects that match text pattern 
-  if (length(ss) == 0)
-    warning("No shape with matching text pattern was not found.", call. = FALSE)
-  if (length(ss) > 1)
-    warning("More than one shape with matching text pattern found and replaced.", call. = FALSE)
-  
+  warn_if_zero_or_many(ss, what)
   for (s in ss) {               # delete from last to first
     s[["Textframe"]][["TextRange"]]$Replace(FindWhat=what, ReplaceWhat = replace)
   }  

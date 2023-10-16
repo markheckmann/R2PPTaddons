@@ -74,7 +74,7 @@ PPT.AddGraphicstoSlide2_ <- function(ppt,
   # 1,1 would not work and will produce blurry images. For an unknown reason the
   # size has to be reasonably big. Here the slide's dimensions are used.
   
-  file <- PPT.getAbsolutePath(file)         # absolute paths must be supplied to COM object
+  file <- normalizePath(file)               # absolute paths must be supplied to COM object
   file <- gsub("/", "\\\\", file)           # backslashes must be used
   
   img <- shapes$AddPicture(FileName = file, 

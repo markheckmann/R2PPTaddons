@@ -8,7 +8,7 @@
 
 ## 0.3 (under development)
 
-* Updated docs and twekaed DESCRIPTION (UTF8, no staged installation)
+* Updated docs and tweaked DESCRIPTION (UTF8, no staged installation)
 * Add `z.order` argument to `PPT.AddGraphicstoSlide2`, tweaked examples and sample PPTX 
   to show feature
 * Add `MsoZOrderCmd` enumeration
